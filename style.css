@@ -20,7 +20,7 @@
 *,*::before,*::after{box-sizing:border-box}
 html{overflow-x:clip;-webkit-text-size-adjust:100%;scroll-padding-top:var(--hh)}
 body{margin:0;background:var(--bg);color:var(--ink);font:400 16px/1.6 var(--sans);letter-spacing:-.005em;
-  -webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;overflow-x:hidden;
+  -webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;overflow-x:clip;
   transition:background-color .6s var(--ease),color .6s var(--ease)}
 body.menu-open{overflow:hidden}
 body::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:90;opacity:.05;mix-blend-mode:multiply;
@@ -63,7 +63,7 @@ em{font-style:italic;font-weight:300}
 .js [data-r-art].in{opacity:1}
 
 /* ───────── Bar ───────── */
-.bar{position:fixed;inset:0 0 auto;height:var(--hh);z-index:80;display:grid;grid-template-columns:1fr auto 1fr;align-items:center;
+.bar{position:fixed;inset:0 0 auto;height:var(--hh);z-index:100;display:grid;grid-template-columns:1fr auto 1fr;align-items:center;
   padding-inline:var(--gutter);font-size:.9rem;transition:background-color .5s var(--ease),transform .6s var(--ease),border-color .5s;border-bottom:1px solid transparent}
 .bar.stuck{background:color-mix(in srgb,var(--bg) 84%,transparent);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-color:var(--rule)}
 .bar.hide{transform:translateY(-100%)}
@@ -111,7 +111,7 @@ body.menu-open .bar{transform:none;background:transparent;border-color:transpare
 .menu-foot button{color:var(--ink);border-bottom:1px solid currentColor}
 
 /* ───────── Hero ───────── */
-.hero{position:relative;height:100svh;min-height:620px;display:flex;flex-direction:column;align-items:center;overflow:hidden}
+.hero{position:sticky;top:0;z-index:0;height:100svh;min-height:620px;display:flex;flex-direction:column;align-items:center;overflow:hidden}
 .hero-bg{position:absolute;inset:0;z-index:-1;overflow:hidden}
 .hero-img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 60%;
   filter:blur(0px) contrast(1.08) brightness(.88);transform:scale(1);
@@ -163,10 +163,10 @@ body.menu-open .bar{transform:none;background:transparent;border-color:transpare
 .sec-head span:nth-child(2){text-align:center}
 .sec-head .r{text-align:right;color:var(--muted)}
 .grid{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));column-gap:clamp(12px,1.6vw,24px)}
-.vline.v-sep{margin:clamp(70px,9vw,140px) auto 0;height:clamp(80px,11vw,170px);transform-origin:top}
+.vline.v-sep{margin:clamp(70px,9vw,140px) auto clamp(40px,5vw,80px);height:clamp(80px,11vw,170px);transform-origin:top}
 .js .v-sep{transform:scaleY(0);transition:transform 1.6s var(--ease)}
 .js .v-sep.in{transform:none}
-.v-sep + .sec{padding-top:clamp(40px,5vw,80px)}
+.sec:has(>.v-sep:first-child){padding-top:0}
 
 /* Presentación */
 .present-text{grid-column:1/7;display:flex;flex-direction:column;gap:clamp(28px,4vw,56px);align-self:center}
@@ -345,3 +345,25 @@ html:not(.js) .sign-text{clip-path:none}html:not(.js) .sign path{stroke-dashoffs
 
 /* вертикальный фон (9:16) на мобильных: cover по центру */
 @media (max-width:768px){.hero-img{object-fit:cover;object-position:center center}}
+
+/* ───────── Слои: первый экран — база, секции наплывают поверх ───────── */
+main>.sec,.foot{position:relative;z-index:1;background:var(--bg);transition:background-color .6s var(--ease)}
+main>.sec{border-radius:28px 28px 0 0;box-shadow:0 -24px 60px -24px rgba(0,0,0,.28)}
+:root[data-theme=dark] main>.sec{box-shadow:0 -24px 70px -20px rgba(0,0,0,.7)}
+.hero-core,.hero-corners{will-change:transform,opacity}
+/* последний блок выкатывается поверх предыдущего, который остаётся закреплённым */
+main>.sec.human{position:sticky;top:var(--pin-top,0px);z-index:1}
+main>.sec.contact{z-index:2;border-radius:34px 34px 0 0;box-shadow:0 -34px 80px -24px rgba(0,0,0,.34)}
+:root[data-theme=dark] main>.sec.contact{box-shadow:0 -34px 90px -20px rgba(0,0,0,.8)}
+@media (prefers-reduced-motion:reduce){.hero-core,.hero-corners{transform:none!important;opacity:1!important}}
+
+/* мобильный фон: фигуры приглушены (тонировка + лёгкая расфокусировка), эспланада остаётся читаемой */
+@media (max-width:768px){
+  .hero-veil::after{content:"";position:absolute;inset:0;pointer-events:none;
+    background:
+      radial-gradient(34% 22% at 18% 63%,color-mix(in srgb,var(--bg) 70%,transparent),transparent 100%),
+      radial-gradient(46% 38% at 76% 62%,color-mix(in srgb,var(--bg) 70%,transparent),transparent 100%);
+    -webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px);
+    -webkit-mask-image:radial-gradient(34% 22% at 18% 63%,#000 30%,transparent 100%),radial-gradient(46% 38% at 76% 62%,#000 30%,transparent 100%);
+    mask-image:radial-gradient(34% 22% at 18% 63%,#000 30%,transparent 100%),radial-gradient(46% 38% at 76% 62%,#000 30%,transparent 100%)}
+}

@@ -338,7 +338,7 @@ window.I18N = {
   const onHead = () => {
     const y = scrollY;
     top.classList.toggle('stuck', y > 40);
-    top.classList.toggle('hide', y > lastY + 4 && y > 500 ? true : (y < lastY - 4 ? false : top.classList.contains('hide')));
+    // шапка всегда видна поверх слоёв
     lastY = y;
   };
 
@@ -389,10 +389,28 @@ window.I18N = {
   /* после fade-reveal отключаем длинный transition, чтобы параллакс не «тянулся» */
   pars.forEach(img => setTimeout(() => img.classList.add('live'), 5000));
 
+  /* ───────── Слои ───────── */
+  const heroCore = $('.hero-core'), heroCorners = $('.hero-corners');
+  const layers = () => {
+    if (reduce || !heroCore) return;
+    const p = Math.min(1, Math.max(0, scrollY / innerHeight));
+    heroCore.style.transform = `translate3d(0,${(p * -60).toFixed(1)}px,0)`;
+    heroCore.style.opacity = (1 - p * 0.7).toFixed(3);
+    if (heroCorners) heroCorners.style.opacity = (1 - p * 1.2).toFixed(3);
+  };
+  // предпоследний блок закрепляется нижним краем, чтобы контакт выкатывался поверх него
+  const pinHuman = () => {
+    const h = $('.sec.human'); if (!h) return;
+    h.style.setProperty('--pin-top', Math.min(0, innerHeight - h.offsetHeight) + 'px');
+  };
+  addEventListener('resize', pinHuman); addEventListener('load', pinHuman);
+  if (window.ResizeObserver) { const h = $('.sec.human'); if (h) new ResizeObserver(pinHuman).observe(h); }
+  pinHuman();
+
   let ticking = false;
   const onScroll = () => {
     if (ticking) return; ticking = true;
-    requestAnimationFrame(() => { onHead(); if (!reduce) par(); ticking = false; });
+    requestAnimationFrame(() => { onHead(); layers(); if (!reduce) par(); ticking = false; });
   };
   addEventListener('scroll', onScroll, { passive: true });
   addEventListener('resize', onScroll);
