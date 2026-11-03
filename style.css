@@ -82,7 +82,7 @@ body.menu-open .bar{transform:none;background:transparent;border-color:transpare
 .lang button{position:relative;opacity:.55;transition:opacity .3s}
 .lang button:hover,.lang button[aria-pressed=true]{opacity:1}
 .snd{position:relative;display:flex;align-items:center;justify-content:center;font-size:.78rem;opacity:.55;transition:opacity .3s}
-.snd span{font-family:'Noto Music','Segoe UI Symbol','Apple Symbols',serif;font-size:.4em;line-height:1;font-weight:400}
+.snd span{font-family:'Noto Music','Segoe UI Symbol','Apple Symbols',serif;font-size:.85em;line-height:1;font-weight:400}
 .snd::after{content:"";position:absolute;left:0;right:0;bottom:-3px;height:1px;background:currentColor;transform:scaleX(0);transform-origin:left;transition:transform .5s var(--ease)}
 .snd:hover,.snd[aria-pressed=true]{opacity:1}
 .snd:hover::after,.snd[aria-pressed=true]::after{transform:scaleX(1)}
@@ -157,7 +157,11 @@ body.menu-open .bar{transform:none;background:transparent;border-color:transpare
 .principles li{padding:18px 18px 0 0;display:flex;flex-direction:column;gap:12px}
 .principles li+li{border-left:1px solid var(--rule);padding-left:18px}
 .principles span{color:var(--gold);font-family:var(--serif);font-style:italic;font-size:1.1rem}
-.principles b{font-family:var(--serif);font-weight:300;font-size:clamp(1.3rem,2vw,2.1rem)}
+.principles b{font-family:var(--serif);font-weight:300;font-size:clamp(1.3rem,2vw,2.1rem);min-height:1.25em;position:relative}
+.js .principles li span{opacity:0;transition:opacity 1.2s var(--ease)}
+.js .principles li.on span{opacity:1}
+.principles li.typing b::after{content:"";display:inline-block;width:1px;height:.95em;margin-left:3px;vertical-align:-.1em;background:var(--gold);animation:caret 1s steps(1) infinite}
+@keyframes caret{50%{opacity:0}}
 
 .canvas{grid-column:8/13;position:relative;padding-bottom:70px;align-self:center}
 .matte{padding:clamp(10px,1.1vw,16px);border:1px solid var(--rule);background:var(--paper);border-radius:999px 999px 4px 4px;transition:background-color .6s,border-color .6s}
@@ -269,7 +273,9 @@ html:not(.js) .sign-text{clip-path:none}html:not(.js) .sign path{stroke-dashoffs
 
 /* ───────── Responsive ───────── */
 @media (max-width:1000px){
-  .present-text,.canvas,.col-l,.col-r,.msg-intro,.form,.human-copy .mid,.human-copy .col-r{grid-column:1/-1}
+  .present-text{display:contents}
+  .present-text>.big{order:1}.canvas{order:2}.present-text>.lead{order:3}.present-text>.principles{order:4}
+  .present-text>*,.canvas,.col-l,.col-r,.msg-intro,.form,.human-copy .mid,.human-copy .col-r{grid-column:1/-1}
   .col-l{display:none}
   .grid{row-gap:50px}
   .canvas{width:min(100%,440px);justify-self:center}

@@ -350,6 +350,31 @@ window.I18N = {
     if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); }
   }), { threshold: 0.12, rootMargin: '0px 0px -6% 0px' });
   const startReveal = () => $$('.rv, [data-r], [data-r-art], .v-sep').forEach(el => io.observe(el));
+
+  /* ───────── Три принципа: неспешная печать по очереди ───────── */
+  const pr = $('.principles');
+  if (pr && !reduce) {
+    const items = $$('li', pr);
+    const typeIn = () => {
+      let k = 0;
+      const next = () => {
+        if (k >= items.length) return;
+        const li = items[k++], b = $('b', li), key = b.dataset.i18n, full = t(key);
+        li.classList.add('on', 'typing'); b.textContent = '';
+        let n = 0;
+        const tick = () => {
+          if (t(key) !== full) { li.classList.remove('typing'); b.textContent = t(key); return next(); }
+          b.textContent = full.slice(0, ++n);
+          if (n < full.length) setTimeout(tick, 95);
+          else { li.classList.remove('typing'); setTimeout(next, 450); }
+        };
+        setTimeout(tick, 500);
+      };
+      next();
+    };
+    $$('b', pr).forEach(b => b.textContent = ' ');
+    new IntersectionObserver((es, o) => es.forEach(e => { if (e.isIntersecting) { o.disconnect(); typeIn(); } }), { threshold: 0.6 }).observe(pr);
+  } else if (pr) $$('li', pr).forEach(li => li.classList.add('on'));
   const ready = () => { document.body.classList.remove('is-loading'); document.body.classList.add('ready'); setTimeout(startReveal, 120); };
   (document.fonts && document.fonts.ready ? Promise.race([document.fonts.ready, new Promise(r => setTimeout(r, 1500))]) : Promise.resolve()).then(ready);
 
