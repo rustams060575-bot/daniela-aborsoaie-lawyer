@@ -304,6 +304,9 @@ html:not(.js) .sign-text{clip-path:none}html:not(.js) .sign path{stroke-dashoffs
 }
 @media (max-width:640px){
   :root{--hh:60px}
+  /* панорама целиком: видны оба силуэта по краям; верх и низ полосы растворяются в фоне */
+  .hero-img{inset:auto 0 auto 0;top:28%;height:auto;aspect-ratio:2/1;object-fit:cover;
+    -webkit-mask-image:linear-gradient(to bottom,transparent,#000 34%,#000 66%,transparent);mask-image:linear-gradient(to bottom,transparent,#000 34%,#000 66%,transparent)}
   .bar-contact,.bar-right .lang{display:none}
   .bar-right{gap:16px}
   .snd{min-width:32px;min-height:32px}
