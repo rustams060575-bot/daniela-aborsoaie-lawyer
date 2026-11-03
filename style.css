@@ -111,7 +111,7 @@ body.menu-open .bar{transform:none;background:transparent;border-color:transpare
 .menu-foot button{color:var(--ink);border-bottom:1px solid currentColor}
 
 /* ───────── Hero ───────── */
-.hero{position:relative;z-index:0;height:100svh;min-height:620px;display:flex;flex-direction:column;align-items:center;overflow:hidden}
+.hero{position:sticky;top:0;z-index:0;height:100svh;min-height:620px;display:flex;flex-direction:column;align-items:center;overflow:hidden}
 .hero-bg{position:absolute;inset:0;z-index:-1;overflow:hidden}
 .hero-img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 60%;
   filter:blur(0px) contrast(1.08) brightness(.88);transform:scale(1);
@@ -346,8 +346,10 @@ html:not(.js) .sign-text{clip-path:none}html:not(.js) .sign path{stroke-dashoffs
 /* вертикальный фон (9:16) на мобильных: cover по центру */
 @media (max-width:768px){.hero-img{object-fit:cover;object-position:center center}}
 
-/* ───────── Сплошной поток: каждый блок непрозрачный, без наложений и просветов ───────── */
-main>.sec,.foot{position:relative;z-index:1;background:var(--bg);transition:background-color .6s var(--ease)}
+/* ───────── Первый экран закреплён, остальные блоки идут поверх сплошным непрозрачным потоком ───────── */
+main>.sec,.foot{display:flow-root;position:relative;z-index:1;background:var(--bg);transition:background-color .6s var(--ease)}
+main>.sec{box-shadow:0 -18px 40px -22px rgba(0,0,0,.35)}
+:root[data-theme=dark] main>.sec{box-shadow:0 -18px 40px -16px rgba(0,0,0,.7)}
 /* мобильный фон: фигуры приглушены (тонировка + лёгкая расфокусировка), эспланада остаётся читаемой */
 @media (max-width:768px){
   .hero-veil::after{content:"";position:absolute;inset:0;pointer-events:none;
