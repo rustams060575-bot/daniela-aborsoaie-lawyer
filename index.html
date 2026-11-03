@@ -24,12 +24,13 @@
 <link rel="preload" as="image" href="assets/daniela.jpg">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Music&text=%F0%9D%84%9E" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Inter+Tight:wght@300;400;500;600&family=Mrs+Saint+Delafield&family=Cinzel:wght@500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=68">
+<link rel="stylesheet" href="style.css?v=71">
 </head>
 <body class="is-loading">
 <a class="skip" href="#main" data-i18n="skip">Saltar al contenido</a>
 
 <!-- Фиксированная шапка: Menu · Contact по углам -->
+<p class="hero-time" aria-label="Hora local"><b id="clock">--:--</b></p>
 <header class="bar" id="bar">
   <div class="bar-left">
     <button class="bar-menu" id="menu-open" type="button" aria-expanded="false" aria-controls="menu"><span data-i18n="menu">Menú</span></button>
@@ -79,7 +80,6 @@
   <span class="vline v-bot" aria-hidden="true"></span>
   <div class="hero-corners">
     <p lang="es" class="slogan-l">El arte de la<br>defensa jurídica</p>
-    <p class="hero-time"><b id="clock">--:--</b></p>
     <p lang="es" class="slogan-l slogan-r">Alicante</p>
   </div>
 </section>
@@ -201,7 +201,12 @@
     <div><dt data-i18n="l_where">Ubicación</dt><dd>Alicante, España</dd></div>
     <div><dt data-i18n="l_how">Atención</dt><dd data-i18n="l_how_v">Personal</dd></div>
   </dl>
+</section>
+<div class="ask-spacer" id="ask-spacer" aria-hidden="true"></div>
+</main>
 
+<!-- Финальный блок: закреплён внизу, открывается из-под уходящего контента -->
+<section class="ask" id="ask" aria-label="Mensaje">
   <div class="msg grid">
     <div class="msg-intro">
       <p class="kicker rv" data-r data-i18n="ms_eyebrow">Un primer mensaje</p>
@@ -225,16 +230,14 @@
       </div>
     </form>
   </div>
-</section>
-</main>
-
 <footer class="foot">
   <p>© Daniela Monalisa Aborsoaie · Alicante</p>
   <p class="c"><a href="#inicio" data-i18n="to_top">Volver arriba ↑</a></p>
   <p class="r"><span data-i18n="ft_concept">Concepto de diseño · no es el sitio oficial</span> · <a href="https://www.abogados-en-alicante.es/despacho-de-abogados-en-alicante/" target="_blank" rel="noopener" data-i18n="ft_photo">Fotografía y perfil: SEIS & LAW</a></p>
 </footer>
+</section>
 
 <audio id="bgm" src="assets/ambient-piano.mp3" loop preload="none"></audio>
-<script src="script.js?v=68"></script>
+<script src="script.js?v=71"></script>
 </body>
 </html>

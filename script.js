@@ -389,10 +389,18 @@ window.I18N = {
   /* после fade-reveal отключаем длинный transition, чтобы параллакс не «тянулся» */
   pars.forEach(img => setTimeout(() => img.classList.add('live'), 5000));
 
+  /* ───────── Финальный блок под потоком ───────── */
+  const ask = $('#ask'), spacer = $('#ask-spacer');
+  const sizeAsk = () => { if (ask && spacer) spacer.style.height = Math.min(ask.scrollHeight, innerHeight) + 'px'; };
+  const showAsk = () => { if (ask && spacer) document.body.classList.toggle('ask-on', spacer.getBoundingClientRect().top < innerHeight); };
+  addEventListener('resize', () => { sizeAsk(); showAsk(); }); addEventListener('load', sizeAsk);
+  if (window.ResizeObserver && ask) new ResizeObserver(sizeAsk).observe(ask);
+  sizeAsk(); showAsk();
+
   let ticking = false;
   const onScroll = () => {
     if (ticking) return; ticking = true;
-    requestAnimationFrame(() => { onHead(); if (!reduce) par(); ticking = false; });
+    requestAnimationFrame(() => { onHead(); showAsk(); if (!reduce) par(); ticking = false; });
   };
   addEventListener('scroll', onScroll, { passive: true });
   addEventListener('resize', onScroll);
