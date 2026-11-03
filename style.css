@@ -82,7 +82,7 @@ body.menu-open .bar{transform:none;background:transparent;border-color:transpare
 .lang button{position:relative;opacity:.55;transition:opacity .3s}
 .lang button:hover,.lang button[aria-pressed=true]{opacity:1}
 .snd{position:relative;display:flex;align-items:center;justify-content:center;font-size:.78rem;opacity:.55;transition:opacity .3s}
-.snd span{font-family:'Noto Music','Segoe UI Symbol','Apple Symbols',serif;font-size:.85em;line-height:1;font-weight:400}
+.snd span{font-family:'Noto Music','Segoe UI Symbol','Apple Symbols',serif;font-size:1.1rem;line-height:1;font-weight:400}
 .snd::after{content:"";position:absolute;left:0;right:0;bottom:-3px;height:1px;background:currentColor;transform:scaleX(0);transform-origin:left;transition:transform .5s var(--ease)}
 .snd:hover,.snd[aria-pressed=true]{opacity:1}
 .snd:hover::after,.snd[aria-pressed=true]::after{transform:scaleX(1)}
@@ -291,7 +291,7 @@ html:not(.js) .sign-text{clip-path:none}html:not(.js) .sign path{stroke-dashoffs
   .bar-contact,.bar-right .lang{display:none}
   .bar-right{gap:16px}
   .snd{min-width:32px;min-height:32px}
-  .snd span{font-size:1.5em}
+  .snd span{font-size:1.5rem}
   .bar-menu{width:22px;height:18px;font-size:0}
   .bar-menu::after{display:none}
   .bar-menu::before{content:"";position:absolute;left:0;right:0;top:50%;height:1px;background:currentColor;box-shadow:0 -6px 0 currentColor,0 6px 0 currentColor;transition:box-shadow .3s,transform .4s var(--ease)}

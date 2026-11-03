@@ -353,7 +353,7 @@ window.I18N = {
 
   /* ───────── Три принципа: неспешная печать по очереди ───────── */
   const pr = $('.principles');
-  if (pr && !reduce) {
+  if (pr) {   // печать мягкая, поэтому играет и при «уменьшить движение»
     const items = $$('li', pr);
     const typeIn = () => {
       let k = 0;
@@ -373,8 +373,8 @@ window.I18N = {
       next();
     };
     $$('b', pr).forEach(b => b.textContent = ' ');
-    new IntersectionObserver((es, o) => es.forEach(e => { if (e.isIntersecting) { o.disconnect(); typeIn(); } }), { threshold: 0.6 }).observe(pr);
-  } else if (pr) $$('li', pr).forEach(li => li.classList.add('on'));
+    new IntersectionObserver((es, o) => es.forEach(e => { if (e.isIntersecting) { o.disconnect(); typeIn(); } }), { threshold: 0.3 }).observe(pr);
+  }
   const ready = () => { document.body.classList.remove('is-loading'); document.body.classList.add('ready'); setTimeout(startReveal, 120); };
   (document.fonts && document.fonts.ready ? Promise.race([document.fonts.ready, new Promise(r => setTimeout(r, 1500))]) : Promise.resolve()).then(ready);
 
