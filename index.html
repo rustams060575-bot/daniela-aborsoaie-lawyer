@@ -1,0 +1,237 @@
+<!doctype html>
+<html lang="es" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Daniela Monalisa Aborsoaie — Abogacía en Alicante</title>
+<meta name="description" content="Daniela Monalisa Aborsoaie, abogada en Alicante. El arte de la defensa jurídica.">
+<meta name="theme-color" content="#ece8de">
+<meta property="og:title" content="Daniela Monalisa Aborsoaie — Abogacía en Alicante">
+<meta property="og:description" content="El arte de la defensa jurídica.">
+<meta property="og:image" content="assets/daniela.jpg">
+<script>
+/* тема применяется до отрисовки — без мигания */
+(function(){
+  document.documentElement.classList.add('js');
+  var t=null;try{t=localStorage.getItem('dma-theme')}catch(e){}
+  if(t!=='light'&&t!=='dark')t=matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';
+  document.documentElement.dataset.theme=t;
+  var m=document.querySelector('meta[name=theme-color]');if(m)m.content=t==='dark'?'#121211':'#ece8de';
+})();
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preload" as="image" href="assets/daniela.jpg">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Music&text=%F0%9D%84%9E" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Inter+Tight:wght@300;400;500;600&family=Mrs+Saint+Delafield&family=Cinzel:wght@500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body class="is-loading">
+<a class="skip" href="#main" data-i18n="skip">Saltar al contenido</a>
+
+<!-- Фиксированная шапка: Menu · Contact по углам -->
+<header class="bar" id="bar">
+  <div class="bar-left">
+    <button class="bar-menu" id="menu-open" type="button" aria-expanded="false" aria-controls="menu"><span data-i18n="menu">Menú</span></button>
+  </div>
+  <a class="bar-logo" href="#inicio" aria-label="Daniela Monalisa Aborsoaie"><span class="g">D</span><span class="amp">&amp;</span><span class="g">A</span></a>
+  <div class="bar-right">
+    <div class="lang" role="group" aria-label="Idioma">
+      <button type="button" data-lang="es">ES</button><button type="button" data-lang="en">EN</button><button type="button" data-lang="ru">RU</button><button type="button" data-lang="ro">RO</button>
+    </div>
+    <button class="snd" id="snd" type="button" aria-pressed="false" aria-label="Activar sonido"><span aria-hidden="true">𝄞</span></button>
+    <button class="theme" id="theme" type="button" aria-label="Cambiar tema" data-i18n-aria="theme_toggle"><i></i></button>
+    <a class="bar-contact" href="#contacto" data-i18n="nav_contact">Contacto</a>
+  </div>
+</header>
+
+<!-- Меню на весь экран -->
+<div class="menu" id="menu" aria-hidden="true">
+  <nav class="menu-nav" aria-label="Principal">
+    <a href="#inicio"><span>00</span><em data-i18n="m_home">Inicio</em></a>
+    <a href="#presentacion"><span>01</span><em data-i18n="st_label">Presentación</em></a>
+    <a href="#enfoque"><span>02</span><em data-i18n="ap_label">El enfoque</em></a>
+    <a href="#areas"><span>03</span><em data-i18n="ar_label">Áreas de práctica</em></a>
+    <a href="#humano"><span>04</span><em data-i18n="hu_label">Una forma de trabajar</em></a>
+    <a href="#contacto"><span>05</span><em data-i18n="nav_contact">Contacto</em></a>
+  </nav>
+  <div class="menu-foot">
+    <span>Daniela Monalisa Aborsoaie</span>
+    <span lang="es">El arte de la defensa jurídica</span>
+    <button type="button" id="menu-close" data-i18n="close">Cerrar</button>
+  </div>
+</div>
+
+<main id="main">
+
+<!-- HERO -->
+<section class="hero" id="inicio">
+  <div class="hero-bg" aria-hidden="true"><i class="glow g1"></i><i class="glow g2"></i></div>
+  <span class="vline v-top" aria-hidden="true"></span>
+  <div class="hero-core">
+    <p class="role" data-i18n="hero_eyebrow">Abogacía · Alicante</p>
+    <h1 class="name"><span class="ln"><span class="n1">Daniela</span></span><span class="ln"><span class="n2"><em>Monalisa</em></span></span></h1>
+    <p class="surname">Aborsoaie</p>
+  </div>
+  <span class="vline v-bot" aria-hidden="true"></span>
+  <div class="hero-corners">
+    <p lang="es" class="slogan-l">El arte de la<br>defensa jurídica</p>
+    <p class="hero-time">Alicante <b id="clock">--:--</b></p>
+    <p class="hero-scroll"><span data-i18n="scroll">Desliza</span> ↓</p>
+  </div>
+</section>
+
+<!-- 01 PRESENTACIÓN · портрет -->
+<section class="sec present" id="presentacion">
+  <div class="sec-head"><span>(01)</span><span data-i18n="st_label">Presentación</span><span class="r">ICALI 8.708</span></div>
+  <div class="grid">
+    <div class="present-text">
+      <h2 class="big rv" data-i18n-l="st_title"></h2>
+      <p class="lead rv" data-r data-i18n="hero_lead">Tu vida no es un expediente. Tu voz debe ser escuchada.</p>
+      <ul class="principles">
+        <li class="rv" data-r><span>i.</span><b data-i18n="p1">Precisión</b></li>
+        <li class="rv" data-r style="--d:.1s"><span>ii.</span><b data-i18n="p2">Cercanía</b></li>
+        <li class="rv" data-r style="--d:.2s"><span>iii.</span><b data-i18n="p3">Compromiso</b></li>
+      </ul>
+    </div>
+    <figure class="canvas rv" data-r-art>
+      <div class="matte"><div class="arch"><img src="assets/daniela.jpg" width="768" height="1024" alt="Daniela Monalisa Aborsoaie, abogada en Alicante" fetchpriority="high" data-par="0.06"></div></div>
+      <figcaption class="plate">
+        <span class="slogan" lang="es">El arte de la defensa jurídica</span>
+        <span class="plate-meta">Daniela M. Aborsoaie · <span data-i18n="caption_role">Abogada · ICALI 8.708</span></span>
+      </figcaption>
+      <div class="sign" aria-label="Daniela Monalisa">
+        <span class="sign-text" aria-hidden="true">Daniela Monalisa</span>
+        <svg viewBox="0 0 260 24" aria-hidden="true"><path d="M4 16C46 4 90 20 132 11S214 6 256 13"/></svg>
+      </div>
+    </figure>
+  </div>
+</section>
+
+<span class="vline v-sep" aria-hidden="true"></span>
+
+<!-- 02 ENFOQUE -->
+<section class="sec approach" id="enfoque">
+  <div class="sec-head"><span>(02)</span><span data-i18n="ap_label">El enfoque</span><span class="r" data-i18n="ap_kicker">Justicia · Humanidad</span></div>
+  <div class="grid">
+    <div class="col-l"></div>
+    <div class="col-r">
+      <h2 class="big rv" data-i18n-l="ap_title"></h2>
+      <p class="body rv" data-r data-i18n="ap_text">Escuchar con atención. Comprender el contexto. Construir una respuesta propia.</p>
+    </div>
+  </div>
+</section>
+
+<!-- 03 ÁREAS -->
+<section class="sec areas" id="areas">
+  <div class="sec-head"><span>(03)</span><span data-i18n="ar_label">Áreas de práctica</span><span class="r">04</span></div>
+  <ol class="rows">
+    <li class="row rv" data-r>
+      <span class="n">01</span>
+      <h3 data-i18n="a1_t">Derecho penal</h3>
+      <p class="k" data-i18n="a1_k">Imparcialidad</p>
+      <div class="d"><p class="h" data-i18n="a1_h">Una defensa con criterio.</p><p data-i18n="a1_d">Cuando cada decisión importa, claridad, rigor y atención a los detalles.</p></div>
+      <a class="go" href="#contacto" aria-label="Contacto">↗</a>
+    </li>
+    <li class="row rv" data-r>
+      <span class="n">02</span>
+      <h3 data-i18n="a2_t">Derecho civil</h3>
+      <p class="k" data-i18n="a2_k">Equilibrio · Igualdad</p>
+      <div class="d"><p class="h" data-i18n="a2_h">Lo que es tuyo. Lo que importa.</p><p data-i18n="a2_d">Personas, patrimonio y relaciones. Una mirada atenta a cada conflicto.</p></div>
+      <a class="go" href="#contacto" aria-label="Contacto">↗</a>
+    </li>
+    <li class="row rv" data-r>
+      <span class="n">03</span>
+      <h3 data-i18n="a3_t">Familia y relaciones</h3>
+      <p class="k" data-i18n="a3_k">Vínculos</p>
+      <div class="d"><p class="h" data-i18n="a3_h">Nuevos comienzos. La misma dignidad.</p><p data-i18n="a3_d">Una forma cercana de acompañar los momentos que cambian tu vida.</p></div>
+      <a class="go" href="#contacto" aria-label="Contacto">↗</a>
+    </li>
+    <li class="row rv" data-r>
+      <span class="n">04</span>
+      <h3 data-i18n="a4_t">Empresa y deudas</h3>
+      <p class="k" data-i18n="a4_k">Perspectiva</p>
+      <div class="d"><p class="h" data-i18n="a4_h">Volver a tener perspectiva.</p><p data-i18n="a4_d">Cuestiones mercantiles y concursales. Entender la situación para valorar los siguientes pasos.</p></div>
+      <a class="go" href="#contacto" aria-label="Contacto">↗</a>
+    </li>
+  </ol>
+</section>
+
+<span class="vline v-sep" aria-hidden="true"></span>
+
+<!-- 04 LADO HUMANO -->
+<section class="sec human" id="humano">
+  <div class="sec-head"><span>(04)</span><span data-i18n="hu_label">Una forma de trabajar</span><span class="r" data-i18n="hu_sub">De persona a persona</span></div>
+  <div class="human-quote">
+    <p class="kicker rv" data-r data-i18n="hu_eyebrow">El lado humano del derecho</p>
+    <h2 class="huge rv" data-i18n-l="hu_title"></h2>
+  </div>
+  <figure class="band rv" data-r-art>
+    <div class="frame"><div class="band-in"><img src="assets/themis.jpg" width="1536" height="1024" alt="Estatua de Temis, la Justicia con los ojos vendados y la balanza" loading="lazy"></div></div>
+    <figcaption class="band-cap"><span>Fig. 02</span><span lang="es">Themis · Justicia</span><span>Alicante</span></figcaption>
+  </figure>
+  <ol class="steps">
+    <li class="rv" data-r><span>01</span><em data-i18n="s1">Escuchar.</em></li>
+    <li class="rv" data-r style="--d:.1s"><span>02</span><em data-i18n="s2">Comprender.</em></li>
+    <li class="rv" data-r style="--d:.2s"><span>03</span><em data-i18n="s3">Acompañar.</em></li>
+  </ol>
+  <div class="grid human-copy">
+    <h3 class="mid rv" data-r data-i18n="hu_h3">Defender tus derechos. Cuidar lo que importa.</h3>
+    <div class="col-r">
+      <p class="quote rv" data-r data-i18n="hu_q">En los momentos difíciles, comprender es el primer acto de defensa.</p>
+      <p class="body rv" data-r data-i18n="hu_p">Escuchar con atención. Estudiar cada detalle. Acompañarte con claridad y respeto, para que puedas decidir tu siguiente paso.</p>
+    </div>
+  </div>
+</section>
+
+<span class="vline v-sep" aria-hidden="true"></span>
+
+<!-- 05 CONTACTO -->
+<section class="sec contact" id="contacto">
+  <div class="sec-head"><span>(05)</span><span data-i18n="co_label">El primer paso</span><span class="r" data-i18n="co_place">Alicante · Atención personal</span></div>
+  <h2 class="huge rv" data-i18n-l="co_title"></h2>
+  <a class="mail rv" data-r id="mailto" href="mailto:daniela@abogados-en-alicante.es"><span>daniela@abogados-en-alicante.es</span><i>↗</i></a>
+
+  <dl class="facts">
+    <div><dt data-i18n="l_name">Abogada</dt><dd>Daniela Monalisa Aborsoaie</dd></div>
+    <div><dt data-i18n="l_bar">Colegiada</dt><dd>ICALI 8.708</dd></div>
+    <div><dt data-i18n="l_where">Ubicación</dt><dd>Alicante, España</dd></div>
+    <div><dt data-i18n="l_how">Atención</dt><dd data-i18n="l_how_v">Personal</dd></div>
+  </dl>
+
+  <div class="msg grid">
+    <div class="msg-intro">
+      <p class="kicker rv" data-r data-i18n="ms_eyebrow">Un primer mensaje</p>
+      <h3 class="mid2 rv" data-i18n-l="ms_title"></h3>
+      <p class="body rv" data-r data-i18n="ms_p">No necesitas saber qué tipo de asunto es ni encontrar las palabras perfectas. Cuéntame brevemente qué te preocupa.</p>
+    </div>
+    <form class="form rv" data-r id="form" novalidate>
+      <label class="field"><span data-i18n="f_q">¿Qué te gustaría preguntar?</span><textarea id="f-msg" rows="4" required></textarea></label>
+      <label class="field"><span data-i18n="f_name">¿Cómo te llamas? (opcional)</span><input id="f-name" type="text" autocomplete="name"></label>
+      <p class="help" data-i18n="f_help">Escribe solo lo necesario para este primer contacto. No hace falta adjuntar documentos ni datos sensibles.</p>
+      <button class="btn" type="submit"><span data-i18n="f_btn">Preparar mi mensaje</span><i>↗</i></button>
+      <p class="help fine" data-i18n="f_note">Verás el borrador antes de abrir tu correo. Esta página no envía ni guarda tu mensaje.</p>
+      <div class="draft" id="draft" hidden>
+        <p class="draft-ok" data-i18n="r_ready">Tu mensaje está preparado. Se abrirá tu aplicación de correo para revisarlo y enviarlo a Daniela.</p>
+        <pre id="draft-text"></pre>
+        <div class="draft-actions">
+          <a class="btn solid" id="draft-open" href="#"><span data-i18n="r_open">Abrir mi correo</span><i>↗</i></a>
+          <button class="link" type="button" id="draft-edit" data-i18n="r_edit">Editar</button>
+        </div>
+        <p class="help fine"><span data-i18n="r_fallback">Si no se abre tu correo, puedes copiar el texto y escribir a</span> <a href="mailto:daniela@abogados-en-alicante.es">daniela@abogados-en-alicante.es</a>.</p>
+      </div>
+    </form>
+  </div>
+</section>
+</main>
+
+<footer class="foot">
+  <p>© Daniela Monalisa Aborsoaie · Alicante</p>
+  <p class="c"><a href="#inicio" data-i18n="to_top">Volver arriba ↑</a></p>
+  <p class="r"><span data-i18n="ft_concept">Concepto de diseño · no es el sitio oficial</span> · <a href="https://www.abogados-en-alicante.es/despacho-de-abogados-en-alicante/" target="_blank" rel="noopener" data-i18n="ft_photo">Fotografía y perfil: SEIS & LAW</a></p>
+</footer>
+
+<audio id="bgm" src="assets/ambient-piano.mp3" loop preload="none"></audio>
+<script src="script.js"></script>
+</body>
+</html>
