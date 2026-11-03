@@ -342,3 +342,6 @@ html:not(.js) .sign-text{clip-path:none}html:not(.js) .sign path{stroke-dashoffs
   .sign-text{clip-path:none}.sign path{stroke-dashoffset:0}
   .js .v-sep,.js body:not(.ready) .vline{transform:none}
 }
+
+/* вертикальный фон (9:16) на мобильных: cover по центру */
+@media (max-width:768px){.hero-img{object-fit:cover;object-position:center center}}
