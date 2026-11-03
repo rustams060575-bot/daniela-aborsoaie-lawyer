@@ -1,11 +1,11 @@
 <!doctype html>
-<html lang="es" data-theme="light">
+<html lang="es" data-theme="dark">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Daniela Monalisa Aborsoaie — Abogacía en Alicante</title>
 <meta name="description" content="Daniela Monalisa Aborsoaie, abogada en Alicante. El arte de la defensa jurídica.">
-<meta name="theme-color" content="#ece8de">
+<meta name="theme-color" content="#121211">
 <meta property="og:title" content="Daniela Monalisa Aborsoaie — Abogacía en Alicante">
 <meta property="og:description" content="El arte de la defensa jurídica.">
 <meta property="og:image" content="assets/daniela.jpg">
@@ -14,7 +14,7 @@
 (function(){
   document.documentElement.classList.add('js');
   var t=null;try{t=localStorage.getItem('dma-theme')}catch(e){}
-  if(t!=='light'&&t!=='dark')t=matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';
+  if(t!=='light'&&t!=='dark')t='dark'; // по умолчанию — тёмная тема
   document.documentElement.dataset.theme=t;
   var m=document.querySelector('meta[name=theme-color]');if(m)m.content=t==='dark'?'#121211':'#ece8de';
 })();
@@ -69,7 +69,7 @@
 
 <!-- HERO -->
 <section class="hero" id="inicio">
-  <div class="hero-bg" aria-hidden="true"><i class="glow g1"></i><i class="glow g2"></i></div>
+  <div class="hero-bg" aria-hidden="true"><img class="hero-img" src="assets/hero-bg.jpg" alt="" width="1774" height="887" fetchpriority="high"><i class="hero-veil"></i></div>
   <span class="vline v-top" aria-hidden="true"></span>
   <div class="hero-core">
     <p class="role" data-i18n="hero_eyebrow">Abogacía · Alicante</p>

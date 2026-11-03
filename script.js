@@ -260,9 +260,6 @@ window.I18N = {
   $('#theme').addEventListener('click', () => {
     setTheme(root.dataset.theme === 'dark' ? 'light' : 'dark', true);
   });
-  matchMedia('(prefers-color-scheme: dark)').addEventListener?.('change', e => {
-    if (!store.get('dma-theme')) setTheme(e.matches ? 'dark' : 'light');
-  });
 
   /* ───────── Языки ───────── */
   const LANGS = ['es', 'en', 'ru', 'ro'];
