@@ -55,9 +55,11 @@ em{font-style:italic;font-weight:300}
 .ln>span{display:inline-block;transition:transform 1.3s var(--ease) calc(var(--i,0)*.1s + var(--d,0s))}
 .js .rv .ln>span{transform:translateY(112%)}
 .js .rv.in .ln>span{transform:none}
-.js [data-r]{opacity:0;transform:translateY(24px);transition:opacity 1.1s var(--ease) var(--d,0s),transform 1.3s var(--ease) var(--d,0s)}
+.js [data-r]{opacity:0;transform:translateY(18px);transition:opacity 1.8s var(--ease) var(--d,0s),transform 2s var(--ease) var(--d,0s)}
 .js [data-r].in{opacity:1;transform:none}
-.js [data-r-art]{opacity:0;transition:opacity 1.8s var(--ease) .1s}
+.js [data-r-art]{opacity:0;transition:opacity 2.2s var(--ease) .1s}
+.js [data-r-art] img{--bl:14px}
+.js [data-r-art].in img{--bl:0px}
 .js [data-r-art].in{opacity:1}
 
 /* ───────── Bar ───────── */
@@ -80,7 +82,7 @@ body.menu-open .bar{transform:none;background:transparent;border-color:transpare
 .lang button{position:relative;opacity:.55;transition:opacity .3s}
 .lang button:hover,.lang button[aria-pressed=true]{opacity:1}
 .snd{position:relative;display:flex;align-items:center;justify-content:center;font-size:.78rem;opacity:.55;transition:opacity .3s}
-.snd span{font-family:'Noto Music','Segoe UI Symbol','Apple Symbols',serif;font-size:.75em;line-height:1;font-weight:400}
+.snd span{font-family:'Noto Music','Segoe UI Symbol','Apple Symbols',serif;font-size:.4em;line-height:1;font-weight:400}
 .snd::after{content:"";position:absolute;left:0;right:0;bottom:-3px;height:1px;background:currentColor;transform:scaleX(0);transform-origin:left;transition:transform .5s var(--ease)}
 .snd:hover,.snd[aria-pressed=true]{opacity:1}
 .snd:hover::after,.snd[aria-pressed=true]::after{transform:scaleX(1)}
@@ -161,10 +163,10 @@ body.menu-open .bar{transform:none;background:transparent;border-color:transpare
 .matte{padding:clamp(10px,1.1vw,16px);border:1px solid var(--rule);background:var(--paper);border-radius:999px 999px 4px 4px;transition:background-color .6s,border-color .6s}
 .arch{aspect-ratio:3/4;overflow:hidden;border-radius:999px 999px 2px 2px;position:relative;background:var(--bg2)}
 .arch img,.band-in img{width:100%;height:116%;object-fit:cover;object-position:50% 12%;
-  transform:translate3d(0,var(--py,0),0) scale(var(--sc,1.06));will-change:transform;transition:transform 2.4s var(--ease),filter .6s}
-.arch img.live,.band-in img.live{transition:filter .6s}
+  transform:translate3d(0,var(--py,0),0) scale(var(--sc,1.06));filter:blur(var(--bl,0px));will-change:transform;transition:transform 2.8s var(--ease),filter 2.4s var(--ease)}
+.arch img.live,.band-in img.live{transition:filter 2.4s var(--ease)}
 .canvas.in .arch img{--sc:1}
-:root[data-theme=dark] .arch img,:root[data-theme=dark] .band-in img{filter:brightness(.9) contrast(1.03)}
+:root[data-theme=dark] .arch img,:root[data-theme=dark] .band-in img{filter:brightness(.9) contrast(1.03) blur(var(--bl,0px))}
 .plate{display:flex;flex-direction:column;gap:4px;padding:16px 8px 0;max-width:60%}
 .slogan{font-family:var(--serif);font-style:italic;font-size:1.15rem;line-height:1.25;color:var(--muted)}
 .plate-meta{color:var(--muted);opacity:.85;font-size:.7rem}
@@ -208,8 +210,8 @@ html:not(.js) .sign-text{clip-path:none}html:not(.js) .sign path{stroke-dashoffs
 .band-cap{display:flex;justify-content:space-between;gap:16px;padding:14px 4px 0;font-size:.74rem;color:var(--muted)}
 .band-cap span:nth-child(2){font-family:var(--serif);font-style:italic;font-size:1rem;color:var(--ink)}
 .band-in{aspect-ratio:3/2;overflow:hidden;position:relative;background:#0e1411;outline:1px solid var(--rule);outline-offset:-1px}
-.band-in img{height:100%;object-position:50% 50%;--sc:1;transform:none;filter:none}
-:root[data-theme=dark] .band-in img{filter:brightness(.92)}
+.band-in img{height:100%;object-position:50% 50%;--sc:1;transform:none}
+:root[data-theme=dark] .band-in img{filter:brightness(.92) blur(var(--bl,0px))}
 .steps{margin-top:clamp(40px,5vw,70px);display:grid;grid-template-columns:repeat(3,1fr);border-bottom:1px solid var(--strong)}
 .steps li{padding:22px 20px 26px 0;display:flex;flex-direction:column;gap:clamp(20px,3vw,50px);min-height:clamp(120px,14vw,220px);justify-content:space-between}
 .steps li+li{border-left:1px solid var(--strong);padding-left:clamp(14px,2vw,28px)}
@@ -282,6 +284,8 @@ html:not(.js) .sign-text{clip-path:none}html:not(.js) .sign path{stroke-dashoffs
   :root{--hh:60px}
   .bar-contact,.bar-right .lang{display:none}
   .bar-right{gap:16px}
+  .snd{min-width:32px;min-height:32px}
+  .snd span{font-size:1.5em}
   .bar-menu{width:22px;height:18px;font-size:0}
   .bar-menu::after{display:none}
   .bar-menu::before{content:"";position:absolute;left:0;right:0;top:50%;height:1px;background:currentColor;box-shadow:0 -6px 0 currentColor,0 6px 0 currentColor;transition:box-shadow .3s,transform .4s var(--ease)}
@@ -308,6 +312,7 @@ html:not(.js) .sign-text{clip-path:none}html:not(.js) .sign path{stroke-dashoffs
 @media (prefers-reduced-motion:reduce){
   *,*::before,*::after{animation:none!important;transition-duration:.01ms!important;transition-delay:0s!important}
   .js [data-r],.js [data-r-art]{opacity:1;transform:none}
+  .js [data-r-art] img{--bl:0px}
   .js .rv .ln>span{transform:none}
   .sign-text{clip-path:none}.sign path{stroke-dashoffset:0}
   .js .v-sep,.js body:not(.ready) .vline{transform:none}

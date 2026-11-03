@@ -365,7 +365,7 @@ window.I18N = {
     });
   };
   /* после fade-reveal отключаем длинный transition, чтобы параллакс не «тянулся» */
-  pars.forEach(img => setTimeout(() => img.classList.add('live'), 3200));
+  pars.forEach(img => setTimeout(() => img.classList.add('live'), 5000));
 
   let ticking = false;
   const onScroll = () => {
