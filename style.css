@@ -80,7 +80,7 @@ body.menu-open .bar{transform:none;background:transparent;border-color:transpare
 .lang button{position:relative;opacity:.55;transition:opacity .3s}
 .lang button:hover,.lang button[aria-pressed=true]{opacity:1}
 .snd{position:relative;display:flex;align-items:center;justify-content:center;font-size:.78rem;opacity:.55;transition:opacity .3s}
-.snd span{font-family:'Noto Music','Segoe UI Symbol','Apple Symbols',serif;font-size:1.5em;line-height:1;font-weight:400}
+.snd span{font-family:'Noto Music','Segoe UI Symbol','Apple Symbols',serif;font-size:.75em;line-height:1;font-weight:400}
 .snd::after{content:"";position:absolute;left:0;right:0;bottom:-3px;height:1px;background:currentColor;transform:scaleX(0);transform-origin:left;transition:transform .5s var(--ease)}
 .snd:hover,.snd[aria-pressed=true]{opacity:1}
 .snd:hover::after,.snd[aria-pressed=true]::after{transform:scaleX(1)}
@@ -104,6 +104,7 @@ body.menu-open .bar{transform:none;background:transparent;border-color:transpare
 .menu.open .menu-nav a:nth-child(4) em{transition-delay:.2s}.menu.open .menu-nav a:nth-child(5) em{transition-delay:.26s}
 .menu.open .menu-nav a:nth-child(6) em{transition-delay:.32s}
 .menu-nav a:hover em{color:var(--gold);font-style:italic}
+.menu-lang{display:none}
 .menu-foot{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap;color:var(--muted);padding-top:20px}
 .menu-foot button{color:var(--ink);border-bottom:1px solid currentColor}
 
@@ -279,8 +280,15 @@ html:not(.js) .sign-text{clip-path:none}html:not(.js) .sign path{stroke-dashoffs
 }
 @media (max-width:640px){
   :root{--hh:60px}
-  .bar-contact{display:none}
-  .bar-right{gap:12px}
+  .bar-contact,.bar-right .lang{display:none}
+  .bar-right{gap:16px}
+  .bar-menu{width:22px;height:18px;font-size:0}
+  .bar-menu::after{display:none}
+  .bar-menu::before{content:"";position:absolute;left:0;right:0;top:50%;height:1px;background:currentColor;box-shadow:0 -6px 0 currentColor,0 6px 0 currentColor;transition:box-shadow .3s,transform .4s var(--ease)}
+  .bar-menu[aria-expanded=true]::before{box-shadow:none;transform:rotate(45deg)}
+  .bar-menu[aria-expanded=true]{color:var(--ink)}
+  .bar-menu[aria-expanded=true]::after{display:block;transform-origin:center;left:0;right:0;top:50%;bottom:auto;transform:rotate(-45deg)}
+  .menu-lang{display:flex;gap:18px;font-size:.9rem;padding:20px 0 0}
   .bar-logo .g{font-size:1.9rem}
   .lang{gap:8px}
   .sec-head{grid-template-columns:auto 1fr;gap:16px}
