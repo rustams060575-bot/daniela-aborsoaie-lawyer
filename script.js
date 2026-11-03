@@ -285,8 +285,8 @@ window.I18N = {
     if (!$('#draft').hidden) buildDraft(false);
   }
   $$('.lang button').forEach(b => b.addEventListener('click', () => applyLang(b.dataset.lang, true)));
-  const nav = (navigator.language || 'es').slice(0, 2).toLowerCase();
-  applyLang(store.get('dma-lang') || (LANGS.includes(nav) ? nav : 'es'));
+  // по умолчанию — испанский; другой язык только если посетитель сам выбрал его кнопкой ранее
+  applyLang(store.get('dma-lang'));
 
   /* ───────── Плавный скролл (lerp) ───────── */
   const fine = matchMedia('(pointer:fine)').matches;
