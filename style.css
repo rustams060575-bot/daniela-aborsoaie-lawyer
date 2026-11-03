@@ -152,7 +152,8 @@ body.menu-open .bar{transform:none;background:transparent;border-color:transpare
 .surname{font-family:var(--serif);font-weight:400;font-size:clamp(1.5rem,4.1vw,4.9rem);line-height:1;letter-spacing:.42em;text-transform:uppercase;margin-top:clamp(20px,2.8vw,44px);padding-left:.42em;color:var(--ink)}
 .hero-corners{position:absolute;inset:auto var(--gutter) 28px;display:grid;grid-template-columns:1fr auto 1fr;align-items:end;color:var(--muted);line-height:1.35}
 .slogan-l{font-family:var(--serif);font-style:italic;font-size:1.1rem}
-.hero-time{text-align:center}.hero-time b{font-weight:500;color:var(--ink);font-variant-numeric:tabular-nums;margin-left:6px}
+.hero-time{text-align:center}.hero-time b{font-weight:500;color:var(--ink);font-variant-numeric:tabular-nums}
+.slogan-r{text-align:right;justify-self:end}
 
 /* ───────── Sections ───────── */
 .sec{padding:clamp(80px,10vw,170px) var(--gutter) 0}
