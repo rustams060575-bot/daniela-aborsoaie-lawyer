@@ -298,7 +298,7 @@ window.I18N = {
   const glide = y => { target = clamp(y, 0, maxY()); if (!raf) { cur = scrollY; raf = requestAnimationFrame(tick); } };
   if (fine && !reduce) {
     addEventListener('wheel', e => {
-      if (e.ctrlKey || e.metaKey || e.defaultPrevented || e.target.closest('textarea') || document.body.classList.contains('menu-open')) return;
+      if (window.__lenis || e.ctrlKey || e.metaKey || e.defaultPrevented || e.target.closest('textarea') || document.body.classList.contains('menu-open')) return;
       /* внутри финального блока: сначала его собственная прокрутка, на краях — управление возвращается странице */
       const inAsk = e.target.closest && e.target.closest('#ask');
       if (inAsk && inAsk.scrollHeight > inAsk.clientHeight + 1) {
@@ -318,7 +318,7 @@ window.I18N = {
     e.preventDefault();
     closeMenu();
     const y = id === '#inicio' ? 0 : el.getBoundingClientRect().top + scrollY - 20;
-    if (fine && !reduce) glide(y); else scrollTo({ top: y, behavior: reduce ? 'auto' : 'smooth' });
+    if (window.__lenis) window.__lenis.scrollTo(y, { duration: 1.6 }); else if (fine && !reduce) glide(y); else scrollTo({ top: y, behavior: reduce ? 'auto' : 'smooth' });
     history.replaceState(null, '', id);
   }));
 
@@ -412,8 +412,62 @@ window.I18N = {
   addEventListener('resize', onScroll);
   onScroll();
 
+  /* ───────── «Полёт камеры»: глубина по скроллу ─────────
+     Только свойства scale/translate (не мешают reveal-transform), значения догоняют цель с инерцией.
+     Скролл не блокируется: всё считается от текущего scrollY, поэтому вверх и вниз работает одинаково. */
+  if (!reduce) {
+    const sel = ['.sec-head', '.present-text>*', '.canvas', '.approach .big', '.approach .body', '.row', '.band', '.steps',
+      '.human-quote', '.human-copy .mid', '.human-copy .col-r', '.facts', '.mail', '.contact .huge'];
+    const items = [...new Set(sel.flatMap(s => $$(s)))].map(el => ({ el, s: 1, y: 0 }));
+    const zoom = $$('.band-in img').map(el => ({ el, s: 1 }));
+    const heroBg = $('.hero-bg'), heroCore = $('.hero-core'), heroCorners = $('.hero-corners'), vlines = $$('.hero>.vline');
+    const hero = { p: 0 };
+    const cl = (v, a, b) => Math.min(b, Math.max(a, v));
+    const ease = x => 1 - Math.pow(1 - x, 3);
+    let fRaf = 0, first = true;
+    const step = () => {
+      if (root.classList.contains('gl')) { fRaf = 0; return; }
+      const vh = innerHeight, k = first ? 1 : 0.13;
+      let moving = false;
+      // чтение
+      const rects = items.map(o => o.el.getBoundingClientRect());
+      const zr = zoom.map(o => o.el.parentElement.getBoundingClientRect());
+      // герой: камера «въезжает» вперёд, пока контент накрывает его
+      const hp = cl(scrollY / vh, 0, 1);
+      hero.p += (hp - hero.p) * k; if (Math.abs(hp - hero.p) > 0.0005) moving = true;
+      // запись
+      if (heroBg) heroBg.style.scale = (1 + 0.2 * hero.p).toFixed(4);
+      if (heroCore) { heroCore.style.scale = (1 + 0.45 * hero.p).toFixed(4); heroCore.style.opacity = (1 - 1.15 * hero.p).toFixed(3); }
+      if (heroCorners) heroCorners.style.opacity = (1 - 1.6 * hero.p).toFixed(3);
+      vlines.forEach(v => v.style.opacity = (1 - 1.4 * hero.p).toFixed(3));
+      items.forEach((o, i) => {
+        const r = rects[i];
+        if (r.bottom < -vh * 0.6 || r.top > vh * 1.6) return; // далеко за кадром
+        const enter = ease(cl((r.top - vh * 0.38) / (vh * 0.62), 0, 1));
+        const leave = cl((vh * 0.22 - r.bottom) / (vh * 0.5), 0, 1);
+        const ts = 1 - 0.075 * enter + 0.05 * leave, ty = 46 * enter - 26 * leave;
+        o.s += (ts - o.s) * k; o.y += (ty - o.y) * k;
+        if (Math.abs(ts - o.s) > 0.0004 || Math.abs(ty - o.y) > 0.05) moving = true;
+        o.el.style.scale = o.s.toFixed(4); o.el.style.translate = '0 ' + o.y.toFixed(2) + 'px';
+      });
+      zoom.forEach((o, i) => { // фото-галерея: камера отъезжает от кадра
+        const r = zr[i], pr = cl((r.top + r.height / 2 - vh * 0.5) / vh, -1, 1);
+        const ts = 1 + 0.22 * cl(pr + 0.35, 0, 1);
+        o.s += (ts - o.s) * k; if (Math.abs(ts - o.s) > 0.0004) moving = true;
+        o.el.style.scale = o.s.toFixed(4);
+      });
+      first = false;
+      fRaf = moving ? requestAnimationFrame(step) : 0;
+    };
+    const kick = () => { if (!fRaf) fRaf = requestAnimationFrame(step); };
+    addEventListener('scroll', kick, { passive: true });
+    addEventListener('resize', () => { first = true; kick(); });
+    addEventListener('load', () => { first = true; kick(); });
+    kick();
+  }
+
   /* ───────── Фоновый звук ─────────
-     1) если есть assets/ambient-piano.mp3 — играет он;
+     1) если есть assets/piano-2.mp3 — играет он (зациклен, громкость 35 %, по кнопке вкл/выкл);
      2) иначе генерируется мягкий амбиент (Web Audio): пад + реверберация + редкие колокольчики. */
   const bgm = $('#bgm'), snd = $('#snd'), VOL = 0.35;
   bgm.loop = true; bgm.volume = VOL;

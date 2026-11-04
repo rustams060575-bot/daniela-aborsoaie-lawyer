@@ -24,13 +24,13 @@
 <link rel="preload" as="image" href="assets/daniela.jpg">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Music&text=%F0%9D%84%9E" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Inter+Tight:wght@300;400;500;600&family=Mrs+Saint+Delafield&family=Cinzel:wght@500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=73">
+<link rel="stylesheet" href="style.css?v=84">
 </head>
 <body class="is-loading">
 <a class="skip" href="#main" data-i18n="skip">Saltar al contenido</a>
 
 <!-- Фиксированная шапка: Menu · Contact по углам -->
-<p class="hero-time" aria-label="Hora local"><b id="clock">--:--</b></p>
+<p class="hero-time"><b id="clock">--:--</b></p>
 <header class="bar" id="bar">
   <div class="bar-left">
     <button class="bar-menu" id="menu-open" type="button" aria-expanded="false" aria-controls="menu"><span data-i18n="menu">Menú</span></button>
@@ -76,6 +76,7 @@
     <p class="role" data-i18n="hero_eyebrow">Abogacía · Alicante</p>
     <h1 class="name"><span class="ln"><span class="n1">Daniela</span></span><span class="ln"><span class="n2"><em>Monalisa</em></span></span></h1>
     <p class="surname">Aborsoaie</p>
+    <p class="hero-lead" data-i18n="hero_lead">Tu vida no es un expediente. Tu voz debe ser escuchada.</p>
   </div>
   <span class="vline v-bot" aria-hidden="true"></span>
   <div class="hero-corners">
@@ -127,6 +128,7 @@
 
 <!-- 03 ÁREAS -->
 <section class="sec areas" id="areas">
+  <div class="stage">
   <div class="sec-head"><span>(03)</span><span data-i18n="ar_label">Áreas de práctica</span><span class="r">04</span></div>
   <ol class="rows">
     <li class="row rv" data-r>
@@ -158,6 +160,7 @@
       <a class="go" href="#contacto" aria-label="Contacto">↗</a>
     </li>
   </ol>
+  </div>
 </section>
 
 
@@ -237,7 +240,13 @@
 </footer>
 </section>
 
-<audio id="bgm" src="assets/ambient-piano.mp3" loop preload="none"></audio>
-<script src="script.js?v=72"></script>
+<audio id="bgm" src="assets/piano-2.mp3" loop preload="none"></audio>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/lenis@1.1.13/dist/lenis.min.js"></script>
+<script src="script.js?v=84"></script>
+<script src="fly3d.js?v=84"></script>
+<script src="cursor.js?v=84"></script>
 </body>
 </html>

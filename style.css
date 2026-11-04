@@ -378,3 +378,108 @@ body.ask-on .ask{visibility:visible}
     -webkit-mask-image:radial-gradient(34% 22% at 18% 63%,#000 30%,transparent 100%),radial-gradient(46% 38% at 76% 62%,#000 30%,transparent 100%);
     mask-image:radial-gradient(34% 22% at 18% 63%,#000 30%,transparent 100%),radial-gradient(46% 38% at 76% 62%,#000 30%,transparent 100%)}
 }
+
+
+/* ───────── «Полёт камеры» (Three.js): включается классом .gl, иначе работает обычная версия ───────── */
+html.lenis,html.lenis body{height:auto}
+.lenis.lenis-smooth{scroll-behavior:auto!important}
+.lenis.lenis-stopped{overflow:hidden}
+#gl{position:fixed;inset:0;width:100%;height:100%;z-index:-1;pointer-events:none;display:block}
+/* герой больше не «приклеен»: его фон рисует WebGL, текст улетает к камере */
+.gl .hero{position:relative;overflow:visible}
+.gl .hero-bg{display:none}
+/* секции прозрачные: сквозь них видна сцена с камерой */
+.gl main>.sec,.gl main>.sec.contact{background:transparent}
+html.gl[data-theme] main>.sec,html.gl[data-theme] main>.sec.contact{box-shadow:none}
+.gl main>.sec *{scale:none!important;translate:none!important}
+/* портрет и фото Фемиды рисуются в WebGL — HTML-рамки остаются в потоке (раскладка, alt, SEO) */
+.gl .matte,.gl .frame{opacity:0}
+.gl .ask{background:var(--bg)}
+
+/* ───────── Карточки-рамы (багет, стиль музейных рам) + пролёт камеры сквозь них (только в режиме .gl) ───────── */
+.gl .areas{padding:0}
+.gl .areas .stage{position:sticky;top:0;height:100svh;overflow:hidden;display:flex;flex-direction:column;padding-top:calc(var(--hh) + 2px)}
+.gl .areas .sec-head{flex:none;margin:0 var(--gutter) clamp(4px,1vh,12px);padding-top:10px}
+.gl .areas .rows{--ar:.86;--m:1;--cw:min(92vw,980px,calc((100svh - var(--hh) - 96px)/var(--ar)));position:relative;flex:1;min-height:0;display:block;width:auto;padding:0;border:0;
+  perspective:1300px;perspective-origin:50% 50%;transform-style:preserve-3d}
+.gl .areas .row{--c:1;--k:1;--u:calc(var(--cw)/100);--fw:calc(var(--u)*6.2);position:absolute;left:50%;top:50%;
+  margin:calc(var(--cw)*var(--ar)*-.5) 0 0 calc(var(--cw)*-.5);width:var(--cw);height:calc(var(--cw)*var(--ar));isolation:auto;
+  display:flex;flex-direction:column;align-items:center;text-align:center;gap:0;color:var(--ink);cursor:pointer;
+  border:0;border-radius:3px;padding:calc(var(--u)*11.5) calc(var(--u)*12) calc(var(--u)*7.5);will-change:transform,opacity;
+  background:linear-gradient(135deg,color-mix(in srgb,var(--gold) 52%,#000) 0%,var(--gold) 16%,color-mix(in srgb,var(--gold) 68%,#000) 36%,color-mix(in srgb,var(--gold) 70%,#fff) 54%,var(--gold) 72%,color-mix(in srgb,var(--gold) 48%,#000) 100%);
+  box-shadow:0 60px 110px -50px rgba(0,0,0,.75),inset 0 0 0 1px rgba(255,255,255,.3),inset 0 0 0 calc(var(--u)*.9) rgba(0,0,0,.32);
+  transition:box-shadow .6s var(--ease)!important}
+.gl .areas .row::before{content:"";position:absolute;inset:var(--fw);z-index:0;pointer-events:none;transform:none;
+  background:color-mix(in srgb,var(--paper) calc(var(--k) * 100%),transparent);
+  box-shadow:inset 0 0 0 calc(var(--u)*.7) rgba(0,0,0,.55),inset 0 calc(var(--u)*1.6) calc(var(--u)*6) rgba(0,0,0,.5);border:1px solid rgba(255,255,255,.1)}
+.gl .areas .row::after{content:"";position:absolute;inset:calc(var(--fw)*.4);z-index:0;pointer-events:none;border:calc(var(--u)*.9) solid;
+  border-color:rgba(255,255,255,.5) rgba(0,0,0,.35) rgba(0,0,0,.42) rgba(255,255,255,.32);box-shadow:0 0 0 1px rgba(0,0,0,.25)}
+.gl .areas .row>*{position:relative;z-index:1;opacity:var(--c)}
+.gl .areas .row.is-focus{box-shadow:0 70px 120px -50px rgba(0,0,0,.85),0 0 60px -10px color-mix(in srgb,var(--gold) 45%,transparent),inset 0 0 0 1px rgba(255,255,255,.35),inset 0 0 0 calc(var(--u)*.9) rgba(0,0,0,.32)}
+.gl .areas .row .n{padding:0;font-family:var(--serif);font-style:italic;font-size:calc(var(--u)*4.6*var(--m));color:var(--gold);margin-bottom:calc(var(--u)*1.2*var(--m))}
+.gl .areas .row h3{font-size:calc(var(--u)*7*var(--m));line-height:1}
+.gl .areas .row.is-focus h3{font-style:italic}
+.gl .areas .row .k{padding:0;margin-top:calc(var(--u)*1.8*var(--m));font-size:calc(var(--u)*1.9*var(--m));letter-spacing:.16em;text-transform:uppercase;color:color-mix(in srgb,var(--ink) 65%,transparent)}
+.gl .areas .row .d{padding:calc(var(--u)*3*var(--m)) 0 0;margin-top:calc(var(--u)*3*var(--m));gap:calc(var(--u)*1.4*var(--m));font-size:calc(var(--u)*2.4*var(--m));line-height:1.55;border-top:1px solid var(--rule);max-width:calc(var(--u)*64)}
+.gl .areas .row .h{font-size:calc(var(--u)*3.9*var(--m));line-height:1.15}
+.gl .areas .row .go{position:static;margin-top:auto;padding:0;width:calc(var(--u)*7.2*var(--m));height:calc(var(--u)*7.2*var(--m));border:1px solid var(--strong);border-radius:50%;
+  display:grid;place-items:center;font-size:calc(var(--u)*3*var(--m));transition:background-color .4s,color .4s,transform .5s var(--ease)}
+.gl .areas .row .go::after{content:"";position:absolute;inset:0;border-radius:inherit;z-index:2}
+.gl .areas .row.is-focus .go{background:var(--ink);color:var(--bg)}
+.gl .areas .row:hover .go{transform:translate(3px,-3px)}
+.gl .areas .dots{flex:none;display:flex;align-items:center;gap:6px;padding:4px var(--gutter) calc(18px + env(safe-area-inset-bottom));font-size:.78rem;color:var(--muted)}
+.gl .areas .dots button{width:34px;height:22px;position:relative}
+.gl .areas .dots button::before{content:"";position:absolute;left:0;right:0;top:50%;height:2px;background:var(--rule);transition:background-color .4s,transform .5s var(--ease)}
+.gl .areas .dots button.on::before{background:var(--gold);transform:scaleY(1.6)}
+.gl .areas .dots span{margin-left:10px;font-variant-numeric:tabular-nums}
+@media (max-width:760px){
+  .gl .areas .rows{--ar:1.3;--m:1.55;--cw:min(94vw,calc((100svh - var(--hh) - 120px)/var(--ar)))}
+  .gl .areas .row{padding:calc(var(--u)*10) calc(var(--u)*10) calc(var(--u)*6.5)}
+  .gl .areas .dots span{display:none}.gl .areas .dots button{width:28px}
+}
+
+/* ───────── Герой: лид, кнопка, подсказка (возвращены) ───────── */
+.hero-lead{font-family:var(--serif);font-size:clamp(1.15rem,1.7vw,1.75rem);line-height:1.3;max-width:30ch;text-align:center;margin-top:clamp(18px,2.6vw,38px);color:var(--ink)}
+.hero-btn{align-self:center;margin-top:clamp(16px,2vw,28px);background:color-mix(in srgb,var(--bg) 35%,transparent);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px)}
+.hero-scroll{position:absolute;left:50%;translate:-50% 0;bottom:60px;font-size:.74rem;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);white-space:nowrap}
+.hero-scroll i{font-style:normal;display:inline-block;animation:nudge 2.2s ease-in-out infinite}
+@keyframes nudge{50%{transform:translateY(5px)}}
+.js body:not(.ready) .hero-lead,.js body:not(.ready) .hero-btn,.js body:not(.ready) .hero-scroll{opacity:0;transform:translateY(14px);filter:blur(10px)}
+.hero-lead,.hero-btn,.hero-scroll{transition:opacity 1.6s var(--ease) 1.3s,transform 1.8s var(--ease) 1.3s,filter 1.8s var(--ease) 1.3s}
+.hero-btn{transition:opacity 1.6s var(--ease) 1.3s,transform 1.8s var(--ease) 1.3s,filter 1.8s var(--ease) 1.3s,color .5s var(--ease)}
+@media (max-width:640px){
+  .hero-lead{font-size:1.05rem;max-width:26ch;margin-top:14px}
+  .hero-btn{margin-top:12px;padding:12px 18px;font-size:.78rem}
+  .hero-scroll{bottom:58px}
+  .name{font-size:clamp(3.4rem,18vw,6rem)}
+  .surname{margin-top:clamp(12px,2vw,20px)}
+}
+
+.name{font-size:clamp(4rem,min(13.5vw,21svh),17rem)}
+.hero-lead{margin-top:clamp(14px,2.2svh,34px)}
+.hero-btn{margin-top:clamp(12px,1.8svh,24px)}
+@media (max-width:640px){.hero-time .lt{display:none}.name{font-size:clamp(3.4rem,18vw,6rem)}}
+
+/* Герой: читаемые угловые подписи (обе темы) */
+.hero-corners{color:var(--ink)}
+.hero-corners .slogan-l{font-size:clamp(1.15rem,1.5vw,1.5rem);line-height:1.3;color:var(--ink);opacity:.95;
+  text-shadow:0 0 14px color-mix(in srgb,var(--bg) 90%,transparent),0 0 28px color-mix(in srgb,var(--bg) 70%,transparent),0 1px 2px color-mix(in srgb,var(--bg) 80%,transparent)}
+.hero-time{color:var(--ink);font-size:.85rem;text-shadow:0 0 12px color-mix(in srgb,var(--bg) 85%,transparent)}
+.hero-time b{font-weight:600}
+.hero-corners .slogan-l{font-size:clamp(1.3rem,1.75vw,1.7rem)}
+.hero-corners::before{content:"";position:absolute;left:calc(var(--gutter) * -1);right:calc(var(--gutter) * -1);bottom:-28px;height:190px;z-index:-1;pointer-events:none;
+  background:linear-gradient(to top,color-mix(in srgb,var(--bg) 78%,transparent),color-mix(in srgb,var(--bg) 40%,transparent) 55%,transparent)}
+@media (max-width:640px){.hero-corners .slogan-l{font-size:1.2rem}.hero-corners::before{height:150px}}
+
+/* ───────── Курсор в стиле Apple ───────── */
+html.has-cursor,html.has-cursor *{cursor:none!important}
+html.has-cursor input,html.has-cursor textarea{cursor:text!important}
+#cursor{position:fixed;left:0;top:0;z-index:10000;pointer-events:none;mix-blend-mode:difference;opacity:0;transition:opacity .25s}
+#cursor.on{opacity:1}
+#cursor i{display:block;width:12px;height:12px;margin:-6px 0 0 -6px;border-radius:50%;background:#fff;
+  transition:transform .35s cubic-bezier(.2,.9,.3,1.2),opacity .3s;will-change:transform}
+#cursor.hot i{transform:scale(3.2);opacity:.5}
+#cursor.down i{transform:scale(.7)}
+#cursor.hot.down i{transform:scale(2.5)}
+#cursor.txt{opacity:0}
+body.menu-open #cursor{mix-blend-mode:difference}
