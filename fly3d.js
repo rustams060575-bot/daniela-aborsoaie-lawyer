@@ -276,6 +276,9 @@
     gsap.ticker.add(() => {
       const now = performance.now(), dt = Math.min(0.05, (now - last) / 1000); last = now;
       const vw = innerWidth, vh = innerHeight, asp = vw / vh, sy = scrollY;
+      const aTop = areas ? areas.getBoundingClientRect().top : 0;                   // чтения — до записей
+      const rects = items.map(o => o.el.getBoundingClientRect());
+      const spTop = spacer ? spacer.getBoundingClientRect().top : 0, askH = ask ? ask.clientHeight : 0;
       // адаптивное качество: на слабых устройствах снижаем разрешение рендера
       if (!tuned && ++frames > 40) {
         acc += dt;
@@ -285,7 +288,7 @@
       /* — горизонтальная лента: рамы плавно сменяют друг друга по горизонтали на общем фоне сцены — */
       let vis = 0, xPx = 0, after = 0;
       if (areas && H.travel) {
-        const top = areas.getBoundingClientRect().top, n = cards.length;
+        const top = aTop, n = cards.length;
         const u = cl(-top / H.travel, 0, 1);
         vis = cl((vh * 0.9 - top) / (vh * 0.6), 0, 1) * (1 - cl((-top - H.travel) / (vh * 0.6), 0, 1));
         after = cl((-top - H.travel) / (vh * 0.9), 0, 1);
@@ -296,10 +299,11 @@
           for (let i = 0; i < n; i++) {
             const d = i - s, ad = Math.abs(d), c = cards[i];
             c.style.transform = 'translate3d(' + (d * SP).toFixed(1) + 'px,0,' + (-Math.min(ad, 2.2) * 150).toFixed(1) + 'px) rotateY(' + (-d * 10).toFixed(2) + 'deg)';
-            c.style.opacity = vis.toFixed(3); c.style.visibility = (ad > 2.6 || vis < 0.01) ? 'hidden' : 'visible';
-            c.style.setProperty('--c', (1 - 0.55 * smooth(0.3, 1, ad)).toFixed(3));
-            c.style.setProperty('--k', '1');
-            c.style.pointerEvents = ad < 1.3 ? 'auto' : 'none';
+            const op = vis.toFixed(2), vs = (ad > 2.6 || vis < 0.01) ? 'hidden' : 'visible', cc = (1 - 0.55 * smooth(0.3, 1, ad)).toFixed(2), pe = ad < 1.3 ? 'auto' : 'none';
+            if (c.__op !== op) { c.style.opacity = op; c.__op = op; }                    // пишем в DOM только то, что изменилось
+            if (c.__vs !== vs) { c.style.visibility = vs; c.__vs = vs; }
+            if (c.__cc !== cc) { c.style.setProperty('--c', cc); c.__cc = cc; }
+            if (c.__pe !== pe) { c.style.pointerEvents = pe; c.__pe = pe; }
           }
           const best = cl(Math.round(s), 0, n - 1);
           if (best !== H.active) {
@@ -343,8 +347,8 @@
       }
 
       // плоскости блоков: подлёт издалека → покой (всегда в фокусе) → пролёт мимо камеры
-      for (const o of items) {
-        const r = o.el.getBoundingClientRect();
+      for (let ii = 0; ii < items.length; ii++) {
+        const o = items[ii], r = rects[ii];
         if (Math.abs(r.width - o.w) > 1 || Math.abs(r.height - o.h) > 1) repaint(o);
         if (r.bottom < -vh * 0.8 || r.top > vh * 1.5 || !r.width) { o.mesh.visible = false; continue; }
         const e = ease(cl((r.top - vh * 0.5) / (vh * 0.5), 0, 1));
@@ -360,8 +364,8 @@
 
       // финальный блок: «открывается» из-под уходящего контента (секции прозрачные)
       if (ask && spacer) {
-        const ah = ask.clientHeight, c = cl(spacer.getBoundingClientRect().top - (vh - ah), 0, ah);
-        ask.style.clipPath = c > 0 ? 'inset(' + c.toFixed(1) + 'px 0 0 0)' : 'none';
+        const c = cl(spTop - (vh - askH), 0, askH), cp = c > 0 ? 'inset(' + c.toFixed(1) + 'px 0 0 0)' : 'none';
+        if (ask.__cp !== cp) { ask.style.clipPath = cp; ask.__cp = cp; }
       }
       renderer.render(scene, camera);
     });

@@ -483,3 +483,68 @@ html.has-cursor input,html.has-cursor textarea{cursor:text!important}
 #cursor.hot.down i{transform:scale(2.5)}
 #cursor.txt{opacity:0}
 body.menu-open #cursor{mix-blend-mode:difference}
+
+/* ───────── Мобильный подвал: обычный поток вместо приклеенного — обратный скролл работает сразу ───────── */
+@media (max-width:1000px),(pointer:coarse){
+  .ask{position:relative!important;visibility:visible!important;max-height:none!important;overflow:visible!important;clip-path:none!important;z-index:1;bottom:auto}
+  .ask-spacer{display:none!important}
+}
+
+/* ───────── Рамы: музейный багет в духе рамы «Моны Лизы» — матовое состаренное золото, ступенчатый профиль ───────── */
+.gl .areas .row{transform-style:flat;backface-visibility:hidden;
+  --fw:calc(var(--u)*8);
+  padding:calc(var(--u)*13.5) calc(var(--u)*14) calc(var(--u)*8.5);border-radius:2px;
+  /* золото: матовое, с патиной в нижнем правом углу и мягким светом в верхнем левом */
+  background:
+    radial-gradient(70% 55% at 4% 3%,rgba(255,236,170,.20),transparent 72%),
+    radial-gradient(75% 65% at 98% 100%,rgba(26,16,2,.50),transparent 72%),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' seed='3'/%3E%3CfeColorMatrix values='0 0 0 0 .16  0 0 0 0 .1  0 0 0 0 .02  0 0 0 .55 -.12'/%3E%3C/filter%3E%3Crect width='220' height='220' filter='url(%23n)'/%3E%3C/svg%3E") 0 0/220px 220px,
+    linear-gradient(158deg,#a98a4a 0%,#8d7137 38%,#9b7f42 58%,#6c5427 100%);
+  --frame-sh:inset 0 0 0 calc(var(--u)*.3) rgba(255,238,176,.5),inset 0 0 0 calc(var(--u)*.85) #46361a,inset 0 0 0 calc(var(--u)*1.8) #b09150;
+  box-shadow:var(--frame-sh),0 70px 120px -55px rgba(0,0,0,.82)}
+.gl .areas .row.is-focus{box-shadow:var(--frame-sh),0 70px 120px -50px rgba(0,0,0,.88),0 0 70px -20px rgba(214,182,104,.28)}
+/* широкий скошенный фриз (митра по углам): свет сверху-слева */
+.gl .areas .row::after{inset:calc(var(--u)*1.8);border:calc(var(--u)*3.9) solid;border-radius:1px;border-image:none;
+  border-color:#d2bb7c #7a6230 #5a4620 #bb9d5a;
+  box-shadow:inset 0 0 0 calc(var(--u)*.3) rgba(0,0,0,.5),0 0 0 calc(var(--u)*.28) rgba(0,0,0,.45)}
+/* блик и зерно позолоты — только по фризу */
+.gl .areas .row>.gilt{position:absolute!important;inset:calc(var(--u)*1.8);padding:calc(var(--u)*3.9);z-index:1;opacity:1!important;pointer-events:none;
+  background:linear-gradient(118deg,rgba(255,244,205,0) 16%,rgba(255,244,205,.34) 31%,rgba(255,244,205,0) 46%,rgba(0,0,0,0) 62%,rgba(0,0,0,.26) 100%),url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' seed='3'/%3E%3CfeColorMatrix values='0 0 0 0 .16  0 0 0 0 .1  0 0 0 0 .02  0 0 0 .55 -.12'/%3E%3C/filter%3E%3Crect width='220' height='220' filter='url(%23n)'/%3E%3C/svg%3E") 0 0/220px 220px;
+  -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;
+  mask:linear-gradient(#000 0 0) content-box exclude,linear-gradient(#000 0 0)}
+/* холст: тёмная лакированная доска, сфумато к краям, дымчатый низ, кракелюр; внутренний кант рамы */
+.gl .areas .row::before{inset:var(--fw);opacity:var(--k);
+  box-shadow:0 0 0 calc(var(--u)*.45) #2b2009,0 0 0 calc(var(--u)*1.35) #c3a763,0 0 0 calc(var(--u)*1.9) #46361a,inset 0 0 calc(var(--u)*5.5) rgba(0,0,0,.6);
+  border:0;background:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='360' height='360'%3E%3Cfilter id='c' x='0' y='0' width='100%25' height='100%25'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.045 .058' numOctaves='4' seed='7'/%3E%3CfeColorMatrix values='0 0 0 0 .18  0 0 0 0 .12  0 0 0 0 .05  1 0 0 0 0'/%3E%3CfeComponentTransfer%3E%3CfeFuncA type='discrete' tableValues='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 .2 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0'/%3E%3C/feComponentTransfer%3E%3C/filter%3E%3Crect width='360' height='360' filter='url(%23c)'/%3E%3C/svg%3E") 0 0/360px 360px,
+    radial-gradient(70% 16% at 50% 76%,rgba(150,168,150,.13),transparent 70%),
+    linear-gradient(to bottom,transparent 52%,rgba(86,98,78,.16) 78%,rgba(54,60,44,.26)),
+    radial-gradient(115% 95% at 50% 40%,transparent 52%,rgba(0,0,0,.34) 100%),
+    linear-gradient(rgba(96,72,34,.10),rgba(96,72,34,.10)),
+    var(--paper)}
+:root[data-theme=light] .gl .areas .row::before{background:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='360' height='360'%3E%3Cfilter id='c' x='0' y='0' width='100%25' height='100%25'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.045 .058' numOctaves='4' seed='7'/%3E%3CfeColorMatrix values='0 0 0 0 .32  0 0 0 0 .22  0 0 0 0 .1  1 0 0 0 0'/%3E%3CfeComponentTransfer%3E%3CfeFuncA type='discrete' tableValues='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 .17 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0'/%3E%3C/feComponentTransfer%3E%3C/filter%3E%3Crect width='360' height='360' filter='url(%23c)'/%3E%3C/svg%3E") 0 0/360px 360px,
+    radial-gradient(70% 16% at 50% 76%,rgba(120,140,118,.16),transparent 70%),
+    linear-gradient(to bottom,transparent 55%,rgba(110,124,98,.12) 80%,rgba(88,92,70,.18)),
+    radial-gradient(115% 95% at 50% 40%,transparent 56%,rgba(86,60,24,.20) 100%),
+    linear-gradient(rgba(176,134,64,.16),rgba(176,134,64,.16)),
+    var(--paper)}
+@media (max-width:760px){.gl .areas .row{padding:calc(var(--u)*11.5) calc(var(--u)*11) calc(var(--u)*7)}}
+
+/* ───────── Рамы: настоящий багет с фотографии рамы «Моны Лизы» (border-image), внутри всё без изменений ───────── */
+.gl .areas .row{
+  /* ширины сторон пропорциональны срезам фото: 92 / 59 / 92 / 75 px  →  ×0.125u */
+  border:solid transparent;border-width:calc(var(--u)*11.5) calc(var(--u)*7.4) calc(var(--u)*11.5) calc(var(--u)*9.4);
+  border-image:url("assets/monalisa-frame.jpg") 92 59 92 75 round;
+  border-radius:0;background:#16110a;
+  padding:calc(var(--u)*2) calc(var(--u)*5) calc(var(--u)*1.2) calc(var(--u)*4.5);
+  --frame-sh:0 0 0 0 transparent;
+  box-shadow:0 70px 120px -55px rgba(0,0,0,.85)}
+.gl .areas .row.is-focus{box-shadow:0 70px 120px -50px rgba(0,0,0,.9),0 0 80px -24px rgba(214,182,104,.30)}
+.gl .areas .row::after{display:none}
+.gl .areas .row>.gilt{display:none!important}
+/* холст заполняет внутреннее окно рамы; мягкая тень от рамы на картину */
+.gl .areas .row::before{inset:0;box-shadow:inset 0 0 calc(var(--u)*5) rgba(0,0,0,.65),inset 0 0 0 calc(var(--u)*.35) rgba(0,0,0,.6)}
+@media (max-width:760px){
+  .gl .areas .row{padding:calc(var(--u)*2.4) calc(var(--u)*5) calc(var(--u)*1.4) calc(var(--u)*4.6)}
+}
