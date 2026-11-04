@@ -299,6 +299,12 @@ window.I18N = {
   if (fine && !reduce) {
     addEventListener('wheel', e => {
       if (e.ctrlKey || e.metaKey || e.defaultPrevented || e.target.closest('textarea') || document.body.classList.contains('menu-open')) return;
+      /* внутри финального блока: сначала его собственная прокрутка, на краях — управление возвращается странице */
+      const inAsk = e.target.closest && e.target.closest('#ask');
+      if (inAsk && inAsk.scrollHeight > inAsk.clientHeight + 1) {
+        const dy = e.deltaY, atTop = inAsk.scrollTop <= 0, atBot = inAsk.scrollTop + inAsk.clientHeight >= inAsk.scrollHeight - 1;
+        if ((dy > 0 && !atBot) || (dy < 0 && !atTop)) return;
+      }
       e.preventDefault();
       if (!raf) { target = cur = scrollY; }
       glide(target + e.deltaY * (e.deltaMode === 1 ? 32 : 1));
