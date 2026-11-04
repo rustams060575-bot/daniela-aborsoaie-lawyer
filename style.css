@@ -418,7 +418,7 @@ html.gl[data-theme] main>.sec,html.gl[data-theme] main>.sec.contact{box-shadow:n
 .gl .areas .row.is-focus{box-shadow:0 70px 120px -50px rgba(0,0,0,.85),0 0 60px -10px color-mix(in srgb,var(--gold) 45%,transparent),inset 0 0 0 1px rgba(255,255,255,.35),inset 0 0 0 calc(var(--u)*.9) rgba(0,0,0,.32)}
 .gl .areas .row .n{padding:0;font-family:var(--serif);font-style:italic;font-size:calc(var(--u)*4.6*var(--m));color:var(--gold);margin-bottom:calc(var(--u)*1.2*var(--m))}
 .gl .areas .row h3{font-size:calc(var(--u)*7*var(--m));line-height:1}
-.gl .areas .row.is-focus h3{font-style:italic}
+.gl .areas .row h3{font-style:italic}
 .gl .areas .row .k{padding:0;margin-top:calc(var(--u)*1.8*var(--m));font-size:calc(var(--u)*1.9*var(--m));letter-spacing:.16em;text-transform:uppercase;color:color-mix(in srgb,var(--ink) 65%,transparent)}
 .gl .areas .row .d{padding:calc(var(--u)*3*var(--m)) 0 0;margin-top:calc(var(--u)*3*var(--m));gap:calc(var(--u)*1.4*var(--m));font-size:calc(var(--u)*2.4*var(--m));line-height:1.55;border-top:1px solid var(--rule);max-width:calc(var(--u)*64)}
 .gl .areas .row .h{font-size:calc(var(--u)*3.9*var(--m));line-height:1.15}
