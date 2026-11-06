@@ -709,76 +709,87 @@ body.menu-open #cursor{mix-blend-mode:difference}
 .ask .chat-in textarea{padding:8px 0}
 .ask .chat-note{text-align:center;margin-inline:auto}
 
-/* ───────── Чат: Apple Glass / Monolith UI (золото #d4af37 в разных прозрачностях; тема — через токены) ───────── */
+/* ───────── Чат: Apple HIG / iOS Glass (нейтральная палитра, системные шрифты, радиусы 12–16px) ───────── */
+.chat{
+  --c-text:#1d1d1f;--c-sub:rgba(60,60,67,.62);--c-line:rgba(0,0,0,.08);
+  --c-glass:rgba(255,255,255,.75);--c-ctl:rgba(255,255,255,.6);--c-ctl-hover:rgba(0,0,0,.05);
+  --c-bubble:rgba(120,120,128,.14);--c-accent:#007aff;--c-accent-soft:rgba(0,122,255,.12);--c-ok:#34c759;
+  --c-shadow:0 20px 50px -18px rgba(0,0,0,.2),0 2px 8px -2px rgba(0,0,0,.06);
+  --c-sans:-apple-system,BlinkMacSystemFont,"SF Pro Text","SF Pro Display","Helvetica Neue","Segoe UI",system-ui,Roboto,Arial,sans-serif}
+:root[data-theme=dark] .chat{
+  --c-text:#f5f5f7;--c-sub:rgba(235,235,245,.6);--c-line:rgba(255,255,255,.1);
+  --c-glass:rgba(30,30,30,.75);--c-ctl:rgba(255,255,255,.07);--c-ctl-hover:rgba(255,255,255,.12);
+  --c-bubble:rgba(118,118,128,.28);--c-accent:#0a84ff;--c-accent-soft:rgba(10,132,255,.2);--c-ok:#30d158;
+  --c-shadow:0 24px 60px -18px rgba(0,0,0,.65),0 2px 8px -2px rgba(0,0,0,.4)}
+
 :root[data-theme] .chat,:root[data-theme] .ask .chat{
-  border-radius:16px;border:1px solid rgba(212,175,55,.25);
-  background:linear-gradient(145deg,rgba(255,252,242,.62),rgba(236,222,190,.34));
-  box-shadow:0 25px 50px -12px rgba(0,0,0,.25),inset 0 1px 0 rgba(255,255,255,.55)}
-:root[data-theme=dark] .chat,:root[data-theme=dark] .ask .chat{
-  background:linear-gradient(145deg,rgba(255,255,255,.075),rgba(212,175,55,.045));
-  box-shadow:0 25px 50px -12px rgba(0,0,0,.25),inset 0 1px 0 rgba(255,255,255,.09),0 0 0 1px rgba(212,175,55,.04)}
-:root[data-theme] .chat:focus-within{border-color:rgba(212,175,55,.5);
-  box-shadow:0 25px 50px -12px rgba(0,0,0,.25),0 0 0 1px rgba(212,175,55,.16),0 0 42px -12px rgba(212,175,55,.32),inset 0 1px 0 rgba(255,255,255,.12)}
-/* настоящее стекло — только на десктопе; на телефонах blur поверх живой сцены дорог и в Safari даёт плотную заливку */
+  font-family:var(--c-sans);color:var(--c-text);-webkit-font-smoothing:antialiased;
+  border-radius:16px;border:1px solid var(--c-line);background:var(--c-glass);box-shadow:var(--c-shadow);gap:14px}
+:root[data-theme] .chat:focus-within{border-color:var(--c-line);box-shadow:var(--c-shadow)}
+/* размытие — на десктопе; на телефонах blur поверх живой WebGL-сцены дорог и в Safari даёт плотную заливку,
+   поэтому там остаётся матовая полупрозрачная заливка того же цвета */
 @media (min-width:769px) and (hover:hover) and (pointer:fine){
-  :root[data-theme] .chat,:root[data-theme] .ask .chat{-webkit-backdrop-filter:blur(24px) saturate(180%);backdrop-filter:blur(24px) saturate(180%)}
+  :root[data-theme] .chat,:root[data-theme] .ask .chat{-webkit-backdrop-filter:blur(20px) saturate(180%);backdrop-filter:blur(20px) saturate(180%)}
 }
-/* мягкая золотая аура позади карточки: стеклу есть что размывать */
-.ask .msg{position:relative}
-.ask .msg::before{content:"";position:absolute;left:50%;bottom:-6%;width:min(980px,110%);height:62%;translate:-50% 0;z-index:-1;pointer-events:none;
-  background:radial-gradient(closest-side,rgba(212,175,55,.17),rgba(212,175,55,.06) 55%,transparent)}
-:root[data-theme=light] .ask .msg::before{background:radial-gradient(closest-side,rgba(212,175,55,.26),rgba(212,175,55,.08) 55%,transparent)}
+.ask .msg::before{display:none}
 
-/* шапка: «• АССИСТЕНТ» с мягко пульсирующей золотой точкой */
-.chat-top{gap:11px;font-weight:500;letter-spacing:.16em;color:color-mix(in srgb,var(--ink) 72%,transparent)}
-.chat-dot{position:relative;width:7px;height:7px;background:#d4af37;box-shadow:0 0 9px rgba(212,175,55,.75);animation:none}
-.chat-dot::after{content:"";position:absolute;inset:-5px;border-radius:50%;background:rgba(212,175,55,.5);animation:chatPulse 2.6s ease-out infinite}
-@keyframes chatPulse{0%{transform:scale(.35);opacity:.8}70%,100%{transform:scale(1.55);opacity:0}}
+/* шапка */
+.chat .chat-top{gap:9px;font:600 11px/1 var(--c-sans);letter-spacing:.08em;text-transform:uppercase;color:var(--c-sub)}
+.chat .chat-dot{position:relative;width:7px;height:7px;border-radius:50%;background:var(--c-ok);box-shadow:none;animation:none}
+.chat .chat-dot::after{content:"";position:absolute;inset:-4px;border-radius:50%;background:var(--c-ok);opacity:0;animation:chatPulse 2.6s ease-out infinite}
+@keyframes chatPulse{0%{transform:scale(.4);opacity:.55}70%,100%{transform:scale(1.5);opacity:0}}
 
-/* сообщения */
-.msg-b.ai{padding:11px 16px 11px 14px;border-radius:12px;border-left:2px solid rgba(212,175,55,.75);
-  background:linear-gradient(135deg,rgba(212,175,55,.13),rgba(236,222,190,.06))}
-:root[data-theme=light] .msg-b.ai{background:linear-gradient(135deg,rgba(212,175,55,.2),rgba(255,248,225,.55))}
-.msg-b.typing{padding:11px 16px 11px 14px;height:auto}
-.msg-b.user{padding:10px 16px;border-radius:12px;color:#f1ebdd;border:1px solid rgba(212,175,55,.16);
-  background:linear-gradient(135deg,#3a352f,#25221e);box-shadow:0 8px 18px -10px rgba(0,0,0,.5)}
+/* сообщения: как в iOS — чистые плашки без декораций */
+.chat .chat-log{gap:8px;padding:2px 2px 2px 0}
+.chat .msg-b{max-width:82%;animation:chatin .5s var(--ease) both}
+.chat .msg-b p,.chat .msg-b.ai p{font:400 15px/1.4 var(--c-sans);letter-spacing:-.011em;color:inherit}
+.chat .msg-b.ai{align-self:flex-start;padding:10px 14px;border:0;border-radius:16px;background:var(--c-bubble);color:var(--c-text)}
+.chat .msg-b.user{align-self:flex-end;padding:10px 14px;border:0;border-radius:16px;background:var(--c-accent);color:#fff;box-shadow:none;font:400 15px/1.4 var(--c-sans);letter-spacing:-.011em}
+.chat .msg-b.err a{border-bottom:1px solid currentColor}
+.chat .msg-b.typing{padding:12px 14px;height:auto;gap:4px}
+.chat .msg-b.typing i{width:6px;height:6px;background:var(--c-sub)}
 
-/* кнопки-теги */
-.chat-tags button{border-radius:8px;border:1px solid rgba(212,175,55,.3);background:rgba(255,255,255,.05);color:var(--ink);
-  transition:border-color .4s var(--ease),box-shadow .5s var(--ease),background .4s,transform .4s var(--ease),color .4s}
-:root[data-theme=light] .chat-tags button{background:rgba(255,252,242,.5)}
-.chat-tags button:hover{border-color:rgba(212,175,55,.8);transform:translateY(-1px);
-  box-shadow:0 0 0 1px rgba(212,175,55,.22),0 0 16px -4px rgba(212,175,55,.5)}
-.chat-tags button[aria-pressed=true],.chat-tags button.urgent[aria-pressed=true]{color:var(--ink);border-color:rgba(212,175,55,.7);
-  background:linear-gradient(135deg,rgba(212,175,55,.34),rgba(226,201,142,.16));
-  box-shadow:inset 0 1px 0 rgba(255,255,255,.25),0 0 18px -6px rgba(212,175,55,.6)}
-.chat-tags button.urgent:hover{border-color:rgba(212,175,55,.8);color:var(--ink)}
-.chat-tags button.urgent[aria-pressed=true]{border-color:rgba(196,142,40,.75);background:linear-gradient(135deg,rgba(196,142,40,.38),rgba(226,201,142,.16))}
+/* теги */
+.chat .chat-tags{gap:8px}
+.chat .chat-tags button{font:500 13px/1 var(--c-sans);letter-spacing:-.006em;padding:9px 14px;border-radius:12px;color:var(--c-text);
+  border:1px solid var(--c-line);background:var(--c-ctl);
+  transition:background-color .25s ease,border-color .25s ease,color .25s ease,transform .25s var(--ease),box-shadow .25s ease}
+.chat .chat-tags button:hover{background:var(--c-ctl-hover);border-color:rgba(128,128,128,.32);transform:translateY(-1px);box-shadow:0 4px 14px -6px rgba(0,0,0,.25)}
+.chat .chat-tags button:active{transform:scale(.97)}
+.chat .chat-tags button[aria-pressed=true],.chat .chat-tags button.urgent[aria-pressed=true]{background:var(--c-accent-soft);border-color:var(--c-accent);color:var(--c-accent);box-shadow:none}
+.chat .chat-tags button.urgent:hover{color:var(--c-text);border-color:rgba(128,128,128,.32)}
+.chat .chat-tags button.urgent[aria-pressed=true]:hover{color:var(--c-accent);border-color:var(--c-accent)}
+@media (min-width:769px) and (hover:hover) and (pointer:fine){
+  .chat .chat-tags button,.chat .chat-in,.chat .chat-hand input{-webkit-backdrop-filter:blur(20px);backdrop-filter:blur(20px)}
+}
 
-/* поле ввода — инсетное стекло */
-.chat-in,.ask .chat-in{border:1px solid rgba(212,175,55,.2);border-radius:12px;padding:6px 6px 6px 16px;align-items:center;
-  background:rgba(0,0,0,.2);box-shadow:inset 0 2px 7px rgba(0,0,0,.3),inset 0 -1px 0 rgba(255,255,255,.05);
-  transition:border-color .4s,box-shadow .5s var(--ease)}
-:root[data-theme=light] .chat-in,:root[data-theme=light] .ask .chat-in{background:rgba(255,255,255,.38);box-shadow:inset 0 2px 6px rgba(90,66,20,.16),inset 0 -1px 0 rgba(255,255,255,.7)}
-.chat-in:focus-within,.ask .chat-in:focus-within{border-color:rgba(212,175,55,.6);box-shadow:inset 0 2px 7px rgba(0,0,0,.3),0 0 0 3px rgba(212,175,55,.12)}
-:root[data-theme=light] .chat-in:focus-within,:root[data-theme=light] .ask .chat-in:focus-within{box-shadow:inset 0 2px 6px rgba(90,66,20,.16),0 0 0 3px rgba(212,175,55,.18)}
-.chat-send{border-radius:10px;color:#1b1712;background:linear-gradient(135deg,#e6cf9a,#b8975a);
-  box-shadow:0 5px 14px -5px rgba(212,175,55,.65),inset 0 1px 0 rgba(255,255,255,.55)}
-.chat-send:hover:not(:disabled){background:linear-gradient(135deg,#f2dfaa,#c9a766);transform:translateY(-2px)}
+/* поле ввода */
+.chat .chat-in,.ask .chat .chat-in{align-items:center;gap:8px;padding:5px 5px 5px 14px;border:1px solid var(--c-line);border-radius:14px;background:var(--c-ctl);box-shadow:none;
+  transition:border-color .25s ease,box-shadow .25s ease,background-color .25s ease}
+.chat .chat-in:hover{border-color:rgba(128,128,128,.32)}
+.chat .chat-in:focus-within,.ask .chat .chat-in:focus-within{border-color:var(--c-accent);box-shadow:0 0 0 3px var(--c-accent-soft)}
+.chat .chat-in textarea{font:400 16px/1.4 var(--c-sans);letter-spacing:-.011em;color:var(--c-text);padding:8px 0}
+.chat .chat-in textarea::placeholder,.chat .chat-hand input::placeholder{color:var(--c-sub);opacity:1}
+.chat .chat-send{width:34px;height:34px;border-radius:12px;background:var(--c-accent);color:#fff;box-shadow:none;transition:transform .25s var(--ease),opacity .25s,filter .25s}
+.chat .chat-send:hover:not(:disabled){background:var(--c-accent);filter:brightness(1.1);transform:translateY(-1px)}
+.chat .chat-send:active:not(:disabled){transform:scale(.94)}
+.chat .chat-send:disabled{opacity:.35}
 
-/* «Передать Daniela»: акцентное золото + микро-блик */
-.chat-handbtn{position:relative;overflow:hidden;isolation:isolate;border-radius:10px;padding:12px 20px;font-weight:500;letter-spacing:.04em;color:var(--ink);
-  border:1px solid rgba(212,175,55,.6);background:linear-gradient(135deg,rgba(212,175,55,.28),rgba(212,175,55,.08));
-  box-shadow:0 10px 24px -12px rgba(212,175,55,.6),inset 0 1px 0 rgba(255,255,255,.28);
-  transition:background .4s,transform .4s var(--ease),box-shadow .5s var(--ease)}
-.chat-handbtn::after{content:"";position:absolute;top:0;bottom:0;left:0;width:100%;z-index:0;pointer-events:none;
-  background:linear-gradient(120deg,transparent 30%,rgba(226,190,118,.3) 42%,rgba(255,252,240,.7) 50%,rgba(226,190,118,.3) 58%,transparent 70%);
-  transform:translateX(-115%);animation:aiShimmer 4s cubic-bezier(.35,.1,.45,1) infinite}
-.chat-handbtn>*{position:relative;z-index:1}
-.chat-handbtn:hover{color:var(--ink);transform:translateY(-1px);background:linear-gradient(135deg,rgba(212,175,55,.45),rgba(212,175,55,.16));
-  box-shadow:0 14px 30px -12px rgba(212,175,55,.7),inset 0 1px 0 rgba(255,255,255,.32)}
-.chat-hand input{border:1px solid rgba(212,175,55,.2);border-radius:10px;padding:11px 14px;background:rgba(0,0,0,.16);box-shadow:inset 0 2px 6px rgba(0,0,0,.26)}
-:root[data-theme=light] .chat-hand input{background:rgba(255,255,255,.4);box-shadow:inset 0 2px 5px rgba(90,66,20,.15)}
-.chat-hand input:focus{border-color:rgba(212,175,55,.65)}
-.chat-ok{border-radius:12px}
-@media (prefers-reduced-motion:reduce){.chat-dot::after,.chat-handbtn::after{animation:none}.chat-dot::after{opacity:.25;transform:scale(1.2)}}
+/* «Передать Daniela» */
+.chat .chat-handbtn{font:600 14px/1 var(--c-sans);letter-spacing:-.006em;padding:12px 18px;border-radius:12px;border:0;color:#fff;background:var(--c-accent);box-shadow:0 6px 16px -8px var(--c-accent);overflow:visible;
+  transition:filter .25s ease,transform .25s var(--ease)}
+.chat .chat-handbtn::after{display:none}
+.chat .chat-handbtn:hover{background:var(--c-accent);color:#fff;filter:brightness(1.1);transform:translateY(-1px)}
+.chat .chat-handbtn:active{transform:scale(.97)}
+.chat .chat-hand input{font:400 16px/1.4 var(--c-sans);color:var(--c-text);padding:11px 14px;border:1px solid var(--c-line);border-radius:12px;background:var(--c-ctl);box-shadow:none;transition:border-color .25s,box-shadow .25s}
+.chat .chat-hand input:focus{border-color:var(--c-accent);box-shadow:0 0 0 3px var(--c-accent-soft)}
+.chat .hand-err{font:400 13px/1.4 var(--c-sans);color:#ff453a}
+.chat .help,.chat .chat-note{font:400 12px/1.45 var(--c-sans);color:var(--c-sub);letter-spacing:0}
+
+/* карточка успеха */
+.chat .chat-ok{border-radius:14px;border:1px solid var(--c-line);background:var(--c-ctl);box-shadow:none}
+.chat .chat-ok svg{stroke:var(--c-ok)}
+.chat .chat-ok .kicker{font:600 11px/1 var(--c-sans);letter-spacing:.08em;text-transform:uppercase;color:var(--c-ok)}
+.chat .chat-ok .ok-t{font:600 20px/1.25 var(--c-sans);letter-spacing:-.02em;color:var(--c-text)}
+.chat .chat-ok .link{font:500 14px/1 var(--c-sans);color:var(--c-accent);border-bottom:0}
+@media (prefers-reduced-motion:reduce){.chat .chat-dot::after{animation:none}}
