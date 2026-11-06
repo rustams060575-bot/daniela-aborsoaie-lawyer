@@ -150,6 +150,15 @@
     chat.classList.remove('is-done'); input.focus({ preventScroll: true });
   });
 
+  /* анимации кнопки в Hero не крутим, пока Hero не на экране или вкладка скрыта (экономия батареи и GPU на телефоне) */
+  const heroAi = $('#hero-ai'), heroEl = $('.hero');
+  if (heroAi && heroEl && 'IntersectionObserver' in window) {
+    let vis = true;
+    const apply = () => heroAi.classList.toggle('is-off', !vis || document.hidden);
+    new IntersectionObserver(([e]) => { vis = e.isIntersecting; apply(); }, { threshold: 0 }).observe(heroEl);
+    document.addEventListener('visibilitychange', apply);
+  }
+
   addEventListener('ask-open', () => { if (!chat.classList.contains('is-done')) input.focus({ preventScroll: true }); });
 
   /* плейсхолдеры зависят от языка: обновляем при смене lang у <html> */
