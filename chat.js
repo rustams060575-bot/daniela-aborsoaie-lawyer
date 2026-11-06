@@ -5,6 +5,8 @@
   const root = document.documentElement;
   const chat = $('#chat');
   if (!chat) return;
+  // Пусто = тот же домен. Для сайта на другом домене укажите адрес бэкенда в <meta name="chat-api" content="https://….onrender.com">
+  const API = ((document.querySelector('meta[name=chat-api]') || {}).content || '').trim().replace(/\/$/, '');
   const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
   const t = k => ((window.I18N || {})[root.lang] || {})[k] || (window.I18N?.es || {})[k] || '';
 
@@ -52,7 +54,7 @@
   const setBusy = b => { busy = b; chat.classList.toggle('is-busy', b); sendBtn.disabled = b; };
 
   async function post(payload) {
-    const r = await fetch('/api/chat', {
+    const r = await fetch(API + '/api/chat', {
       method: 'POST', headers: { 'content-type': 'application/json' },
       body: JSON.stringify({ sid, lang: root.lang, topic, ...payload }),
     });

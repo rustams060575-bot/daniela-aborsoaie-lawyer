@@ -51,6 +51,14 @@ const TOOLS = [{
 }];
 
 // ── лимиты ──
+// За прокси Render (TRUST_PROXY=1) реальный IP клиента берём из X-Forwarded-For
+const TRUST_PROXY = process.env.TRUST_PROXY === '1';
+const clientIp = req => (TRUST_PROXY && String(req.headers['x-forwarded-for'] || '').split(',')[0].trim()) || req.socket.remoteAddress || '';
+// Разрешённые источники для CORS (если сайт открыт с другого домена, чем бэкенд): через запятую, без слэша на конце
+const ALLOWED_ORIGINS = (process.env.ALLOWED_ORIGINS || '').split(',').map(x => x.trim().replace(/\/$/, '')).filter(Boolean);
+let globalHits = []; // общий предохранитель на случай подмены IP: не более 150 запросов/мин на весь сервис
+const globalLimited = () => { const n = Date.now(); globalHits = globalHits.filter(t => n - t < 60_000); globalHits.push(n); return globalHits.length > 150; };
+
 const MAX_BODY = 90_000, MAX_MSG = 1500, MAX_TURNS = 30;
 const hits = new Map(); // ip → [timestamps]
 const limited = ip => {
@@ -199,15 +207,28 @@ async function handleChat(body) {
 
 const sentLeads = new Set();
 
-const MIME = { '.html': 'text/html; charset=utf-8', '.js': 'text/javascript; charset=utf-8', '.css': 'text/css; charset=utf-8', '.jpg': 'image/jpeg', '.png': 'image/png', '.mp3': 'audio/mpeg', '.mp4': 'video/mp4', '.svg': 'image/svg+xml', '.json': 'application/json' };
+const MIME = { '.html': 'text/html; charset=utf-8', '.js': 'text/javascript; charset=utf-8', '.css': 'text/css; charset=utf-8', '.jpg': 'image/jpeg', '.png': 'image/png', '.mp3': 'audio/mpeg', '.mp4': 'video/mp4', '.svg': 'image/svg+xml' };
 
 http.createServer(async (req, res) => {
-  const send = (code, obj) => { res.writeHead(code, { 'content-type': 'application/json; charset=utf-8', 'cache-control': 'no-store' }); res.end(JSON.stringify(obj)); };
+  let cors = {};
+  const send = (code, obj) => { res.writeHead(code, { ...cors, 'content-type': 'application/json; charset=utf-8', 'cache-control': 'no-store' }); res.end(JSON.stringify(obj)); };
   try {
     const url = new URL(req.url, 'http://x');
+    if (url.pathname === '/healthz') return send(200, { ok: true });
     if (url.pathname === '/api/chat') {
+      // CORS: свой домен — всегда можно; чужой — только из ALLOWED_ORIGINS
+      const origin = req.headers.origin;
+      if (origin) {
+        const same = (() => { try { return new URL(origin).host === req.headers.host; } catch { return false; } })();
+        if (!same && !ALLOWED_ORIGINS.includes(origin)) return send(403, { error: 'origin_not_allowed' });
+        cors = { 'access-control-allow-origin': origin, vary: 'Origin' };
+      }
+      if (req.method === 'OPTIONS') {
+        res.writeHead(204, { ...cors, 'access-control-allow-methods': 'POST, OPTIONS', 'access-control-allow-headers': 'content-type', 'access-control-max-age': '86400' });
+        return res.end();
+      }
       if (req.method !== 'POST') return send(405, { error: 'method' });
-      if (limited(req.socket.remoteAddress || '')) return send(429, { error: 'rate_limited' });
+      if (globalLimited() || limited(clientIp(req))) return send(429, { error: 'rate_limited' });
       if (!ANTHROPIC_API_KEY) return send(503, { error: 'not_configured' });
       let raw = '';
       for await (const c of req) { raw += c; if (raw.length > MAX_BODY) return send(413, { error: 'too_large' }); }
@@ -219,7 +240,7 @@ http.createServer(async (req, res) => {
     const rel = normalize(decodeURIComponent(url.pathname)).replace(/^[/\\]+/, '') || 'index.html';
     const file = resolve(SITE, rel);
     const parts = rel.split(sep);
-    if (!file.startsWith(SITE + sep) || parts.some(p => p.startsWith('.')) || ['server', 'tools'].includes(parts[0])) {
+    if (!file.startsWith(SITE + sep) || parts.some(p => p.startsWith('.')) || ['server', 'tools', 'node_modules'].includes(parts[0]) || !(extname(file) in MIME)) {
       res.writeHead(404); return res.end('Not found');
     }
     const data = await readFile(file);
@@ -230,7 +251,7 @@ http.createServer(async (req, res) => {
     console.error(e); send(500, { error: 'server' });
   }
 }).listen(PORT, () => {
-  console.log(`Сайт + /api/chat: http://127.0.0.1:${PORT}/index.html`);
+  console.log(`Сайт + /api/chat: http://127.0.0.1:${PORT}/index.html` + (ALLOWED_ORIGINS.length ? ` · CORS: ${ALLOWED_ORIGINS.join(', ')}` : ''));
   console.log(`Ключи: ANTHROPIC=${ANTHROPIC_API_KEY ? 'ok' : 'НЕТ'} · TELEGRAM_BOT_TOKEN=${TELEGRAM_BOT_TOKEN ? 'ok' : 'НЕТ'} · TELEGRAM_CHAT_ID=${TELEGRAM_CHAT_ID ? 'ok' : 'НЕТ'}`);
   if (TELEGRAM_BOT_TOKEN) fetch(`${process.env.TELEGRAM_API_BASE || 'https://api.telegram.org'}/bot${TELEGRAM_BOT_TOKEN}/getMe`, { signal: AbortSignal.timeout(8000) })
     .then(r => r.json()).then(j => console.log(j.ok ? `Telegram-бот: @${j.result.username} — подключён` : 'Telegram: токен отклонён (' + j.description + ')'))

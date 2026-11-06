@@ -1,0 +1,27 @@
+# Render Blueprint: один Node-сервис раздаёт сайт и /api/chat.
+services:
+  - type: web
+    name: daniela-lawyer
+    runtime: node
+    plan: starter            # free-план «засыпает» через 15 мин простоя; для работы 24/7 нужен платный
+    region: frankfurt        # ближе к Испании
+    buildCommand: echo "no build step"
+    startCommand: node server/server.js
+    healthCheckPath: /healthz
+    autoDeploy: true         # деплой при каждом push в main
+    envVars:
+      - key: NODE_VERSION
+        value: "22"
+      - key: TRUST_PROXY
+        value: "1"
+      - key: CLAUDE_MODEL
+        value: claude-sonnet-5-5
+      - key: ALLOWED_ORIGINS   # только если сайт открывается с ДРУГОГО домена; иначе оставьте пустым
+        value: ""
+        sync: false
+      - key: ANTHROPIC_API_KEY
+        sync: false            # значение вводится в панели Render
+      - key: TELEGRAM_BOT_TOKEN
+        sync: false
+      - key: TELEGRAM_CHAT_ID
+        sync: false
