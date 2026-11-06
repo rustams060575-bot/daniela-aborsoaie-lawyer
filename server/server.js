@@ -30,7 +30,7 @@ REGLAS DE ORO:
 4. Idioma dinámico: Responde siempre en el idioma en el que te habla el usuario (español, inglés, ruso, etc.).
 5. Captura de Lead: Cuando entiendas el problema principal, sugiere amablemente coordinar una revisión con Daniela y solicita su nombre y teléfono/email para que ella estudie su caso.
 6. Herramienta submit_lead: Tan pronto como el usuario proporcione su contacto, utiliza la herramienta submit_lead para enviar el resumen a Telegram.
-Notas técnicas: llama a submit_lead una sola vez y nunca inventes ni supongas un contacto; después de enviarla, confirma con calidez que Daniela leerá el caso personalmente.`;
+Notas técnicas: respuestas de máximo 90 palabras, en texto plano (sin markdown); llama a submit_lead una sola vez y nunca inventes ni supongas un contacto; después de enviarla, confirma con calidez que Daniela leerá el caso personalmente.`;
 
 const HANDOFF_BTN = { es: 'Transmitir a Daniela', en: 'Pass to Daniela', ru: 'Передать Daniela', ro: 'Transmite Danielei' };
 
@@ -59,7 +59,8 @@ const ALLOWED_ORIGINS = (process.env.ALLOWED_ORIGINS || '').split(',').map(x => 
 let globalHits = []; // общий предохранитель на случай подмены IP: не более 150 запросов/мин на весь сервис
 const globalLimited = () => { const n = Date.now(); globalHits = globalHits.filter(t => n - t < 60_000); globalHits.push(n); return globalHits.length > 150; };
 
-const MAX_BODY = 90_000, MAX_MSG = 1500, MAX_TURNS = 30;
+const MAX_BODY = 150_000, // байт; 30 реплик × 1500 символов кириллицы ≈ 90 КБ
+   MAX_MSG = 1500, MAX_TURNS = 30;
 const hits = new Map(); // ip → [timestamps]
 const limited = ip => {
   const now = Date.now(), arr = (hits.get(ip) || []).filter(t => now - t < 60_000);
@@ -74,7 +75,7 @@ async function callClaude(messages, lang) {
   const r = await fetch((process.env.ANTHROPIC_BASE_URL || 'https://api.anthropic.com') + '/v1/messages', {
     method: 'POST',
     headers: { 'content-type': 'application/json', 'x-api-key': ANTHROPIC_API_KEY, 'anthropic-version': '2023-06-01' },
-    body: JSON.stringify({ model: CLAUDE_MODEL, max_tokens: 500, system: `${SYSTEM}\nIdioma de la interfaz del usuario: ${lang}.`, tools: TOOLS, messages }),
+    body: JSON.stringify({ model: CLAUDE_MODEL, max_tokens: 700, system: `${SYSTEM}\nIdioma de la interfaz del usuario: ${lang}.`, tools: TOOLS, messages }),
     signal: AbortSignal.timeout(30_000)
   });
   if (!r.ok) throw new Error(`Claude ${r.status}: ${(await r.text()).slice(0, 200)}`);
@@ -194,9 +195,11 @@ async function handleChat(body) {
       return notifyTelegram(formatLead({
         title: 'Заявка с сайта (оформил AI-агент)', urgent: lead.urgent || topic === 'ur', sid, lang,
         name: lead.name || name, contact: lead.contact, topic: lead.topic || topic, summary: lead.summary, history
-      })).then(() => { sentLeads.add(sid + '|' + lead.contact); return true; });
+      })).then(() => { rememberLead(sid + '|' + lead.contact); return true; });
     }),
-    notifyTelegram(`💬 Сообщение с сайта\n${head}\n\n${last}`)
+    history.filter(m => m.role === 'user').length === 1
+      ? notifyTelegram(`💬 Новый диалог на сайте\n${head}\n\n${last}`)
+      : Promise.resolve(false)
   ]);
   if (tg.status === 'rejected') console.error(tg.reason.message);
   if (reply.status === 'rejected') { console.error(reply.reason.message); return [502, { error: 'ai_unavailable' }]; }
@@ -205,7 +208,8 @@ async function handleChat(body) {
   return [200, { reply: text || '…', lead: leadSent }];
 }
 
-const sentLeads = new Set();
+const sentLeads = new Set(); // ограничим размер, чтобы не росло бесконечно
+const rememberLead = k => { sentLeads.add(k); if (sentLeads.size > 500) sentLeads.delete(sentLeads.values().next().value); };
 
 const MIME = { '.html': 'text/html; charset=utf-8', '.js': 'text/javascript; charset=utf-8', '.css': 'text/css; charset=utf-8', '.jpg': 'image/jpeg', '.png': 'image/png', '.mp3': 'audio/mpeg', '.mp4': 'video/mp4', '.svg': 'image/svg+xml' };
 
@@ -230,14 +234,16 @@ http.createServer(async (req, res) => {
       if (req.method !== 'POST') return send(405, { error: 'method' });
       if (globalLimited() || limited(clientIp(req))) return send(429, { error: 'rate_limited' });
       if (!ANTHROPIC_API_KEY) return send(503, { error: 'not_configured' });
-      let raw = '';
-      for await (const c of req) { raw += c; if (raw.length > MAX_BODY) return send(413, { error: 'too_large' }); }
-      let body; try { body = JSON.parse(raw); } catch { return send(400, { error: 'bad_json' }); }
+      const chunks = []; let size = 0;
+      for await (const c of req) { size += c.length; if (size > MAX_BODY) return send(413, { error: 'too_large' }); chunks.push(c); }
+      let body; try { body = JSON.parse(Buffer.concat(chunks).toString('utf8')); } catch { return send(400, { error: 'bad_json' }); }
+      if (!body || typeof body !== 'object') return send(400, { error: 'bad_json' });
       const [code, out] = await handleChat(body);
       return send(code, out);
     }
     // статика (без server/, tools/, dot-файлов)
-    const rel = normalize(decodeURIComponent(url.pathname)).replace(/^[/\\]+/, '') || 'index.html';
+    let dec; try { dec = decodeURIComponent(url.pathname); } catch { res.writeHead(400); return res.end('Bad request'); }
+    const rel = normalize(dec).replace(/^[/\\]+/, '') || 'index.html';
     const file = resolve(SITE, rel);
     const parts = rel.split(sep);
     if (!file.startsWith(SITE + sep) || parts.some(p => p.startsWith('.')) || ['server', 'tools', 'node_modules'].includes(parts[0]) || !(extname(file) in MIME)) {
