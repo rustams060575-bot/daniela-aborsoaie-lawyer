@@ -3,7 +3,7 @@ services:
   - type: web
     name: daniela-lawyer
     runtime: node
-    plan: starter            # free-план «засыпает» через 15 мин простоя; для работы 24/7 нужен платный
+    plan: free               # бесплатно, без карты; засыпает через 15 мин простоя (первый запрос после сна ~50 с). Для 24/7 — plan: starter
     region: frankfurt        # ближе к Испании
     buildCommand: echo "no build step"
     startCommand: node server/server.js
