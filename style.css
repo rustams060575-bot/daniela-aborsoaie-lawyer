@@ -807,3 +807,9 @@ body.menu-open #cursor{mix-blend-mode:difference}
 .chat .chat-ok .ok-t{font:600 20px/1.25 var(--c-sans);letter-spacing:-.02em;color:var(--c-text)}
 .chat .chat-ok .link{font:500 14px/1 var(--c-sans);color:var(--c-accent);border-bottom:0}
 @media (prefers-reduced-motion:reduce){.chat .chat-dot::after{animation:none}}
+
+/* Скрипичный ключ (кнопка звука): блок иконки равен высоте глифа, чтобы контур не выступал за границы
+   и не обрезался при композитинге (Safari/Chrome); размер и положение глифа прежние */
+.snd{padding:0 4px}
+.snd span{display:block;line-height:2.5}
+.snd::after{left:4px;right:4px;bottom:5px}
