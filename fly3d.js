@@ -10,7 +10,8 @@
   'use strict';
   const root = document.documentElement;
   const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
-  if (reduce || !window.THREE || !window.gsap || !window.ScrollTrigger || !window.Lenis) return;
+  if (reduce || matchMedia('(max-width:768px),(max-width:1024px) and (pointer:coarse)').matches) return;   // телефоны: лёгкий режим без WebGL
+  if (!window.THREE || !window.gsap || !window.ScrollTrigger || !window.Lenis) return;
 
   const $ = (s, r) => (r || document).querySelector(s);
   const cl = (v, a, b) => Math.min(b, Math.max(a, v));
@@ -257,7 +258,14 @@
       renderer.setSize(innerWidth, innerHeight); camera.aspect = innerWidth / innerHeight; camera.updateProjectionMatrix();
       dustU.uPx.value = renderer.getPixelRatio(); fitHero(); measure(); repaintAll(); ScrollTrigger.refresh();
     };
-    let rt = 0; addEventListener('resize', () => { clearTimeout(rt); rt = setTimeout(resize, 120); });
+    let rt = 0, lastW = innerWidth, lastH = innerHeight;
+    addEventListener('resize', () => {
+      /* iOS/Android: при скролле сворачивается адресная строка → меняется только высота окна на ~60–110px.
+         Полная пересборка (setSize, repaintAll, ScrollTrigger.refresh) посреди скролла давала рывки — пропускаем её. */
+      if (coarse && innerWidth === lastW && Math.abs(innerHeight - lastH) < Math.max(160, lastH * 0.2)) return;
+      lastW = innerWidth; lastH = innerHeight;
+      clearTimeout(rt); rt = setTimeout(resize, 120);
+    });
     new MutationObserver(() => {
       const g = new THREE.Color(css('--gold')); archs.forEach(a => a.mats.forEach(m => m.color.copy(g))); dustU.uColor.value.copy(glassTint());
       dustMat.blending = dark() ? THREE.AdditiveBlending : THREE.NormalBlending; dustMat.needsUpdate = true; repaintAll();

@@ -693,6 +693,20 @@ body.menu-open #cursor{mix-blend-mode:difference}
   .hero-corners::before{-webkit-mask-image:linear-gradient(to right,#000 6%,transparent 22%,transparent 78%,#000 94%);mask-image:linear-gradient(to right,#000 6%,transparent 22%,transparent 78%,#000 94%)}
   .hero-veil{-webkit-mask-image:linear-gradient(to right,#000 6%,transparent 22%,transparent 78%,#000 94%),linear-gradient(to bottom,#000 0,#000 74%,transparent 80%,transparent 93%,#000 99%);mask-image:linear-gradient(to right,#000 6%,transparent 22%,transparent 78%,#000 94%),linear-gradient(to bottom,#000 0,#000 74%,transparent 80%,transparent 93%,#000 99%)}
 }
+/* Телефоны: облегчение скролла */
+@media (max-width:768px),(pointer:coarse){
+  /* полноэкранный слой шума с mix-blend-mode заставляет смешивать всю страницу и WebGL-холст на каждом кадре */
+  body::after{display:none}
+  /* холст не пересоздаётся при сворачивании адресной строки: вместо растяжения он заполняет окно без искажений */
+  #gl{object-fit:cover;object-position:50% 50%}
+  /* пока палец двигает страницу, анимации кнопки стоят (их возобновит JS через 150 мс после остановки) */
+  .hero-ai.is-moving::after,.hero-ai.is-moving .hero-ai-dot{animation-play-state:paused}
+}
+/* Шапка на телефонах: отступы не меньше 24px и safe-area (вырез/скругления iPhone, ландшафт) */
+@media (max-width:1024px) and (pointer:coarse),(max-width:768px){
+  .bar{padding-left:max(24px,env(safe-area-inset-left));padding-right:max(24px,env(safe-area-inset-right))}
+  .snd{padding-inline:3px}
+}
 /* reduced-motion: без бесконечного цикла — блик проходит один раз после загрузки */
 @media (prefers-reduced-motion:reduce){.hero-ai-dot{animation:none}.hero-ai::after{animation:aiShimmer 3s ease 2.4s 1 both}}
 

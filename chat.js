@@ -159,6 +159,11 @@
     document.addEventListener('visibilitychange', apply);
   }
 
+  if (heroAi && matchMedia('(max-width:768px),(pointer:coarse)').matches) {
+    let st = 0;
+    addEventListener('scroll', () => { if (!heroAi.classList.contains('is-moving')) heroAi.classList.add('is-moving'); clearTimeout(st); st = setTimeout(() => heroAi.classList.remove('is-moving'), 150); }, { passive: true });
+  }
+
   addEventListener('ask-open', () => { if (!chat.classList.contains('is-done')) input.focus({ preventScroll: true }); });
 
   /* плейсхолдеры зависят от языка: обновляем при смене lang у <html> */

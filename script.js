@@ -424,8 +424,9 @@ window.I18N = {
   if (!reduce) {
     const sel = ['.sec-head', '.present-text>*', '.canvas', '.approach .big', '.approach .body', '.row', '.band', '.steps',
       '.human-quote', '.human-copy .mid', '.human-copy .col-r', '.facts', '.mail', '.contact .huge'];
-    const items = [...new Set(sel.flatMap(s => $$(s)))].map(el => ({ el, s: 1, y: 0 }));
-    const zoom = $$('.band-in img').map(el => ({ el, s: 1 }));
+    const lite = matchMedia('(max-width:768px),(max-width:1024px) and (pointer:coarse)').matches;   // телефон: без покадровых scale/translate у блоков
+    const items = lite ? [] : [...new Set(sel.flatMap(s => $$(s)))].map(el => ({ el, s: 1, y: 0 }));
+    const zoom = lite ? [] : $$('.band-in img').map(el => ({ el, s: 1 }));
     const heroBg = $('.hero-bg'), heroCore = $('.hero-core'), heroCorners = $('.hero-corners'), vlines = $$('.hero>.vline');
     const hero = { p: 0 };
     const cl = (v, a, b) => Math.min(b, Math.max(a, v));
