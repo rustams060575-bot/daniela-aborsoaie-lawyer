@@ -374,7 +374,6 @@ html:not(.js) .sign-text{clip-path:none}html:not(.js) .sign path{stroke-dashoffs
   .bar-contact,.bar-right .lang{display:none}
   .bar-right{gap:16px}
   .snd{min-width:32px;min-height:32px}
-  .snd span{font-size:1.5rem}
   .bar-menu{width:22px;height:18px;font-size:0}
   .bar-menu::after{display:none}
   .bar-menu::before{content:"";position:absolute;left:0;right:0;top:50%;height:1px;background:currentColor;box-shadow:0 -6px 0 currentColor,0 6px 0 currentColor;transition:box-shadow .3s,transform .4s var(--ease)}
@@ -811,5 +810,6 @@ body.menu-open #cursor{mix-blend-mode:difference}
 /* Скрипичный ключ (кнопка звука): блок иконки равен высоте глифа, чтобы контур не выступал за границы
    и не обрезался при композитинге (Safari/Chrome); размер и положение глифа прежние */
 .snd{padding:0 4px}
-.snd span{display:block;line-height:2.5}
-.snd::after{left:4px;right:4px;bottom:5px}
+.snd .clef{display:block;height:30px;width:auto;overflow:visible}   /* контур Noto Music 𝄞: 1,73 em × 17,6px */
+.snd::after{left:4px;right:4px;bottom:-4px}
+@media (max-width:640px){.snd .clef{height:41px}}   /* на телефоне ключ крупнее (раньше font-size 1.5rem) */
