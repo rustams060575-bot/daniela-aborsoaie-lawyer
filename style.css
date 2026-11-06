@@ -629,11 +629,11 @@ body.menu-open #cursor{mix-blend-mode:difference}
 }
 
 /* ───────── Hero: кнопка вызова AI-агента — Apple Glass + бегущий блик (структура hero не меняется) ───────── */
-.hero-ai{position:relative;display:inline-flex;align-items:center;gap:12px;margin-top:clamp(14px,2.2svh,30px);padding:14px 24px 14px 20px;border-radius:999px;
+.hero-ai{position:relative;display:inline-flex;align-items:center;gap:12px;margin-top:clamp(14px,2.2svh,30px);padding:14px 24px 14px 20px;border-radius:10px;
   font-size:.82rem;font-weight:500;letter-spacing:.05em;color:var(--ink);isolation:isolate;overflow:hidden;
   /* стекло: размытие и насыщение фона, сквозь кнопку просвечивает картинка */
-  -webkit-backdrop-filter:blur(12px) saturate(180%);backdrop-filter:blur(12px) saturate(180%);
-  --ai-bg:linear-gradient(135deg,rgba(255,250,238,.58),rgba(236,222,190,.34));
+  -webkit-backdrop-filter:blur(14px) saturate(200%);backdrop-filter:blur(14px) saturate(200%);
+  --ai-bg:linear-gradient(135deg,rgba(255,250,238,.24),rgba(236,222,190,.10));
   --ai-line:rgba(139,115,70,.42);
   --ai-glow:rgba(255,255,255,.7);
   --ai-sh1:rgba(226,190,118,.42);--ai-sh2:rgba(255,252,240,.95);
@@ -641,7 +641,7 @@ body.menu-open #cursor{mix-blend-mode:difference}
   box-shadow:0 12px 32px -14px rgba(60,44,16,.45),inset 0 1px 0 var(--ai-glow),inset 0 -1px 0 rgba(139,115,70,.18);
   transition:opacity 1.6s var(--ease) 1.5s,transform .6s var(--ease),filter 1.8s var(--ease) 1.5s,border-color .5s,background .5s,box-shadow .6s var(--ease),color .5s}
 :root[data-theme=dark] .hero-ai{
-  --ai-bg:linear-gradient(135deg,rgba(255,255,255,.15),rgba(205,182,135,.10));
+  --ai-bg:linear-gradient(135deg,rgba(255,255,255,.07),rgba(205,182,135,.04));
   --ai-line:rgba(244,229,189,.34);
   --ai-glow:rgba(255,255,255,.34);
   --ai-sh1:rgba(230,207,154,.34);--ai-sh2:rgba(255,255,255,.62);
@@ -655,10 +655,10 @@ body.menu-open #cursor{mix-blend-mode:difference}
 .hero-ai>*{position:relative;z-index:1}
 .hero-ai:hover{--ai-cycle:1.8s;transform:translateY(-2px);--ai-line:rgba(139,115,70,.7)}
 :root[data-theme=dark] .hero-ai:hover{--ai-line:rgba(244,229,189,.62);
-  --ai-bg:linear-gradient(135deg,rgba(255,255,255,.22),rgba(205,182,135,.16));
+  --ai-bg:linear-gradient(135deg,rgba(255,255,255,.12),rgba(205,182,135,.08));
   box-shadow:0 16px 44px -14px rgba(0,0,0,.7),0 0 32px -6px rgba(230,207,154,.4),inset 0 1px 0 var(--ai-glow),inset 0 -1px 0 rgba(0,0,0,.28)}
 :root[data-theme=light] .hero-ai:hover{
-  --ai-bg:linear-gradient(135deg,rgba(255,252,242,.74),rgba(240,226,190,.5));
+  --ai-bg:linear-gradient(135deg,rgba(255,252,242,.38),rgba(240,226,190,.2));
   box-shadow:0 16px 38px -14px rgba(139,115,70,.6),inset 0 1px 0 var(--ai-glow),inset 0 -1px 0 rgba(139,115,70,.2)}
 .hero-ai:active{transform:translateY(0) scale(.98)}
 .hero-ai-dot{width:7px;height:7px;border-radius:50%;background:var(--gold);animation:chatpulse 2.8s ease-out infinite}
