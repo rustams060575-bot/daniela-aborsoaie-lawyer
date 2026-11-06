@@ -628,38 +628,46 @@ body.menu-open #cursor{mix-blend-mode:difference}
   .hero-time{font-weight:600}
 }
 
-/* ───────── Hero: кнопка вызова AI-агента (структура hero не меняется) ───────── */
-.hero-ai{position:relative;display:inline-flex;align-items:center;gap:12px;margin-top:clamp(14px,2.2svh,30px);padding:13px 22px 13px 18px;border-radius:999px;
-  font-size:.8rem;letter-spacing:.05em;color:var(--ink);isolation:isolate;overflow:hidden;
-  background:color-mix(in srgb,var(--bg) 42%,transparent);-webkit-backdrop-filter:blur(14px) saturate(1.2);backdrop-filter:blur(14px) saturate(1.2);
-  border:1px solid color-mix(in srgb,var(--ink) 24%,transparent);
-  box-shadow:0 10px 40px -18px rgba(0,0,0,.45),inset 0 1px 0 color-mix(in srgb,var(--ink) 10%,transparent);
-  transition:opacity 1.6s var(--ease) 1.5s,transform .6s var(--ease),filter 1.8s var(--ease) 1.5s,border-color .5s,box-shadow .6s var(--ease),color .5s}
-/* Бегущий блик: цикл 3 с — волна по фону и световая дуга по периметру рамки, затем пауза */
-@property --ai-a{syntax:'<angle>';inherits:false;initial-value:0deg}
-.hero-ai{--ai-hi:color-mix(in srgb,var(--gold) 55%,#fff6dc);--ai-fill:color-mix(in srgb,var(--gold) 34%,transparent);--ai-arc:var(--gold);--ai-cycle:3s}
-:root[data-theme=dark] .hero-ai{--ai-hi:#f4e5bd;--ai-fill:rgba(205,182,135,.30);--ai-arc:#e6cf9a}
-.hero-ai::before{content:"";position:absolute;inset:0;z-index:-1;border-radius:inherit;pointer-events:none;
-  background:linear-gradient(105deg,transparent 38%,var(--ai-fill) 48%,var(--ai-hi) 50%,var(--ai-fill) 52%,transparent 62%);
-  background-size:260% 100%;background-position:135% 0;animation:aiSweep var(--ai-cycle) cubic-bezier(.45,.05,.25,1) infinite}
-.hero-ai::after{content:"";position:absolute;inset:0;z-index:-1;border-radius:inherit;padding:1px;pointer-events:none;
-  background:conic-gradient(from var(--ai-a),transparent 0 62%,color-mix(in srgb,var(--ai-arc) 30%,transparent) 80%,var(--ai-hi) 92%,var(--ai-arc) 97%,transparent 100%);
-  -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;
-  mask:linear-gradient(#000 0 0) content-box exclude,linear-gradient(#000 0 0);
-  animation:aiRing var(--ai-cycle) cubic-bezier(.4,.1,.2,1) infinite}
-@keyframes aiSweep{0%{background-position:135% 0}55%,100%{background-position:-35% 0}}
-@keyframes aiRing{0%{--ai-a:0deg;opacity:0}8%{opacity:1}55%{--ai-a:360deg;opacity:1}68%,100%{--ai-a:360deg;opacity:0}}
-.hero-ai:hover{transform:translateY(-2px);border-color:color-mix(in srgb,var(--gold) 70%,transparent);--ai-cycle:1.7s}
-.hero-ai:hover::after{padding:1.5px}
-:root[data-theme=dark] .hero-ai:hover{box-shadow:0 10px 50px -14px rgba(205,182,135,.5),0 0 28px -8px rgba(230,207,154,.35),inset 0 1px 0 rgba(255,255,255,.08)}
-:root[data-theme=light] .hero-ai:hover{box-shadow:0 12px 36px -16px rgba(139,115,70,.55),inset 0 1px 0 rgba(255,255,255,.5)}
+/* ───────── Hero: кнопка вызова AI-агента — Apple Glass + бегущий блик (структура hero не меняется) ───────── */
+.hero-ai{position:relative;display:inline-flex;align-items:center;gap:12px;margin-top:clamp(14px,2.2svh,30px);padding:14px 24px 14px 20px;border-radius:999px;
+  font-size:.82rem;font-weight:500;letter-spacing:.05em;color:var(--ink);isolation:isolate;overflow:hidden;
+  /* стекло: размытие и насыщение фона, сквозь кнопку просвечивает картинка */
+  -webkit-backdrop-filter:blur(12px) saturate(180%);backdrop-filter:blur(12px) saturate(180%);
+  --ai-bg:linear-gradient(135deg,rgba(255,250,238,.58),rgba(236,222,190,.34));
+  --ai-line:rgba(139,115,70,.42);
+  --ai-glow:rgba(255,255,255,.7);
+  --ai-sh1:rgba(226,190,118,.42);--ai-sh2:rgba(255,252,240,.95);
+  background:var(--ai-bg);border:1px solid var(--ai-line);
+  box-shadow:0 12px 32px -14px rgba(60,44,16,.45),inset 0 1px 0 var(--ai-glow),inset 0 -1px 0 rgba(139,115,70,.18);
+  transition:opacity 1.6s var(--ease) 1.5s,transform .6s var(--ease),filter 1.8s var(--ease) 1.5s,border-color .5s,background .5s,box-shadow .6s var(--ease),color .5s}
+:root[data-theme=dark] .hero-ai{
+  --ai-bg:linear-gradient(135deg,rgba(255,255,255,.15),rgba(205,182,135,.10));
+  --ai-line:rgba(244,229,189,.34);
+  --ai-glow:rgba(255,255,255,.34);
+  --ai-sh1:rgba(230,207,154,.34);--ai-sh2:rgba(255,255,255,.62);
+  box-shadow:0 14px 36px -14px rgba(0,0,0,.7),inset 0 1px 0 var(--ai-glow),inset 0 -1px 0 rgba(0,0,0,.28)}
+/* блик: диагональная полоса пробегает строго внутри кнопки (overflow:hidden) раз в 3 с */
+.hero-ai::after{content:"";position:absolute;top:0;bottom:0;left:0;width:100%;z-index:0;pointer-events:none;
+  background:linear-gradient(120deg,transparent 30%,var(--ai-sh1) 42%,var(--ai-sh2) 50%,var(--ai-sh1) 58%,transparent 70%);
+  transform:translateX(-115%);will-change:transform;animation:aiShimmer var(--ai-cycle,3s) cubic-bezier(.35,.1,.45,1) infinite}
+/* ход ±115% ширины: полоса (30–70% градиента) гарантированно целиком вне кнопки на старте и финише; пробег ~1,6 с из 3 */
+@keyframes aiShimmer{0%{transform:translateX(-115%)}55%,100%{transform:translateX(115%)}}
+.hero-ai>*{position:relative;z-index:1}
+.hero-ai:hover{--ai-cycle:1.8s;transform:translateY(-2px);--ai-line:rgba(139,115,70,.7)}
+:root[data-theme=dark] .hero-ai:hover{--ai-line:rgba(244,229,189,.62);
+  --ai-bg:linear-gradient(135deg,rgba(255,255,255,.22),rgba(205,182,135,.16));
+  box-shadow:0 16px 44px -14px rgba(0,0,0,.7),0 0 32px -6px rgba(230,207,154,.4),inset 0 1px 0 var(--ai-glow),inset 0 -1px 0 rgba(0,0,0,.28)}
+:root[data-theme=light] .hero-ai:hover{
+  --ai-bg:linear-gradient(135deg,rgba(255,252,242,.74),rgba(240,226,190,.5));
+  box-shadow:0 16px 38px -14px rgba(139,115,70,.6),inset 0 1px 0 var(--ai-glow),inset 0 -1px 0 rgba(139,115,70,.2)}
 .hero-ai:active{transform:translateY(0) scale(.98)}
 .hero-ai-dot{width:7px;height:7px;border-radius:50%;background:var(--gold);animation:chatpulse 2.8s ease-out infinite}
 .hero-ai b{font-weight:400;display:inline-block;transition:transform .6s var(--ease)}
 .hero-ai:hover b{transform:translateY(3px)}
 .js body:not(.ready) .hero-ai{opacity:0;transform:translateY(14px);filter:blur(10px)}
-@media (max-width:640px){.hero-ai{padding:11px 18px 11px 15px;font-size:.76rem;margin-top:12px}}
-@media (prefers-reduced-motion:reduce){.hero-ai-dot,.hero-ai::before,.hero-ai::after{animation:none}.hero-ai::after{--ai-a:300deg;opacity:.55}.hero-ai::before{background-position:50% 0;opacity:.35}}
+@media (max-width:640px){.hero-ai{padding:12px 20px 12px 16px;font-size:.78rem;margin-top:12px}}
+/* reduced-motion: без бесконечного цикла — блик проходит один раз после загрузки */
+@media (prefers-reduced-motion:reduce){.hero-ai-dot{animation:none}.hero-ai::after{animation:aiShimmer 3s ease 2.4s 1 both}}
 
 /* ───────── Нижняя секция: центрированный блок с агентом поверх видеофона ───────── */
 .ask .msg.grid{display:flex;flex-direction:column;align-items:center;text-align:center;gap:clamp(18px,2.4vw,30px)}
