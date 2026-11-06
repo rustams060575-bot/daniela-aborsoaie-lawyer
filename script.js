@@ -240,6 +240,7 @@ window.I18N = {
 
 (() => {
   'use strict';
+  for (const l in (window.CHAT_I18N || {})) Object.assign(I18N[l], CHAT_I18N[l]);
   const $ = (s, r = document) => r.querySelector(s);
   const $$ = (s, r = document) => [...r.querySelectorAll(s)];
   const root = document.documentElement;
@@ -279,7 +280,6 @@ window.I18N = {
     $$('.lang button').forEach(b => b.setAttribute('aria-pressed', b.dataset.lang === lang));
     const sb = $('#snd'); if (sb) sb.setAttribute('aria-label', t(sb.getAttribute('aria-pressed') === 'true' ? 'snd_off' : 'snd_on'));
     if (persist) store.set('dma-lang', lang);
-    if (!$('#draft').hidden) buildDraft(false);
   }
   $$('.lang button').forEach(b => b.addEventListener('click', () => applyLang(b.dataset.lang, true)));
   // по умолчанию — испанский; другой язык только если посетитель сам выбрал его кнопкой ранее
@@ -300,6 +300,11 @@ window.I18N = {
     addEventListener('wheel', e => {
       if (window.__lenis || e.ctrlKey || e.metaKey || e.defaultPrevented || e.target.closest('textarea') || document.body.classList.contains('menu-open')) return;
       /* внутри финального блока: сначала его собственная прокрутка, на краях — управление возвращается странице */
+      const inLog = e.target.closest && e.target.closest('.chat-log');
+      if (inLog && inLog.scrollHeight > inLog.clientHeight + 1) {
+        const dy = e.deltaY, atTop = inLog.scrollTop <= 0, atBot = inLog.scrollTop + inLog.clientHeight >= inLog.scrollHeight - 1;
+        if ((dy > 0 && !atBot) || (dy < 0 && !atTop)) return;
+      }
       const inAsk = e.target.closest && e.target.closest('#ask');
       if (inAsk && inAsk.scrollHeight > inAsk.clientHeight + 1) {
         const dy = e.deltaY, atTop = inAsk.scrollTop <= 0, atBot = inAsk.scrollTop + inAsk.clientHeight >= inAsk.scrollHeight - 1;
@@ -317,7 +322,8 @@ window.I18N = {
     if (!el) return;
     e.preventDefault();
     closeMenu();
-    const y = id === '#inicio' ? 0 : el.getBoundingClientRect().top + scrollY - 20;
+    const y = id === '#inicio' ? 0 : id === '#ask' ? document.documentElement.scrollHeight - innerHeight : el.getBoundingClientRect().top + scrollY - 20;
+    if (id === '#ask') setTimeout(() => dispatchEvent(new Event('ask-open')), reduce ? 100 : 1700);
     if (window.__lenis) window.__lenis.scrollTo(y, { duration: 1.6 }); else if (fine && !reduce) glide(y); else scrollTo({ top: y, behavior: reduce ? 'auto' : 'smooth' });
     history.replaceState(null, '', id);
   }));
@@ -587,25 +593,4 @@ window.I18N = {
   const fmt = new Intl.DateTimeFormat('es-ES', { hour: '2-digit', minute: '2-digit', hour12: false, timeZone: 'Europe/Madrid' });
   const tickClock = () => { clock.textContent = fmt.format(new Date()); };
   tickClock(); setInterval(tickClock, 15000);
-
-  /* ───────── Форма: черновик письма ───────── */
-  const form = $('#form'), draft = $('#draft'), draftText = $('#draft-text'), open = $('#draft-open');
-  const fMsg = $('#f-msg'), fName = $('#f-name');
-  function buildDraft(scroll) {
-    const name = fName.value.trim();
-    const body = [t('mail_hello'), '', fMsg.value.trim(), '', t('mail_bye'), name].join('\n').trim();
-    draftText.textContent = body;
-    open.href = `mailto:${EMAIL}?subject=${encodeURIComponent(t('mail_subject'))}&body=${encodeURIComponent(body)}`;
-    draft.hidden = false;
-    if (scroll) setTimeout(() => draft.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'center' }), 60);
-  }
-  form.addEventListener('submit', e => {
-    e.preventDefault();
-    const ok = fMsg.value.trim().length > 0;
-    fMsg.closest('.field').classList.toggle('err', !ok);
-    if (!ok) { fMsg.focus(); return; }
-    buildDraft(true);
-  });
-  fMsg.addEventListener('input', () => fMsg.closest('.field').classList.remove('err'));
-  $('#draft-edit').addEventListener('click', () => { draft.hidden = true; fMsg.focus(); });
 })();
