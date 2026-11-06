@@ -55,7 +55,9 @@ const TOOLS = [{
 const TRUST_PROXY = process.env.TRUST_PROXY === '1';
 const clientIp = req => (TRUST_PROXY && String(req.headers['x-forwarded-for'] || '').split(',')[0].trim()) || req.socket.remoteAddress || '';
 // Разрешённые источники для CORS (если сайт открыт с другого домена, чем бэкенд): через запятую, без слэша на конце
-const ALLOWED_ORIGINS = (process.env.ALLOWED_ORIGINS || '').split(',').map(x => x.trim().replace(/\/$/, '')).filter(Boolean);
+// По умолчанию разрешён боевой сайт на GitHub Pages; дополнительные домены — через переменную ALLOWED_ORIGINS
+const ALLOWED_ORIGINS = ['https://rustams060575-bot.github.io', ...(process.env.ALLOWED_ORIGINS || '').split(',')]
+  .map(x => x.trim().replace(/\/$/, '')).filter(Boolean);
 let globalHits = []; // общий предохранитель на случай подмены IP: не более 150 запросов/мин на весь сервис
 const globalLimited = () => { const n = Date.now(); globalHits = globalHits.filter(t => n - t < 60_000); globalHits.push(n); return globalHits.length > 150; };
 

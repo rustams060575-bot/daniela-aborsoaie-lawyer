@@ -5,8 +5,11 @@
   const root = document.documentElement;
   const chat = $('#chat');
   if (!chat) return;
-  // Пусто = тот же домен. Для сайта на другом домене укажите адрес бэкенда в <meta name="chat-api" content="https://….onrender.com">
-  const API = ((document.querySelector('meta[name=chat-api]') || {}).content || '').trim().replace(/\/$/, '');
+  // Боевой бэкенд на Render. Сайт открывается и с GitHub Pages, поэтому адрес полный, а не относительный.
+  // На localhost используется тот же сервер (относительный путь); переопределить можно через <meta name="chat-api">.
+  const PROD_API = 'https://daniela-lawyer.onrender.com';
+  const isLocal = /^(localhost|127\.0\.0\.1|\[::1\])$/.test(location.hostname);
+  const API = (((document.querySelector('meta[name=chat-api]') || {}).content || '').trim() || (isLocal ? '' : PROD_API)).replace(/\/$/, '');
   const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
   const t = k => ((window.I18N || {})[root.lang] || {})[k] || (window.I18N?.es || {})[k] || '';
 
