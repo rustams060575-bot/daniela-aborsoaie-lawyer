@@ -2,7 +2,8 @@
 // Запуск:  node server/server.mjs   (ключи — в server/.env, см. .env.example)
 import http from 'node:http';
 import { readFile } from 'node:fs/promises';
-import { existsSync, readFileSync } from 'node:fs';
+import { existsSync, readFileSync, writeFileSync } from 'node:fs';
+import { timingSafeEqual } from 'node:crypto';
 import { extname, join, normalize, resolve, sep } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -18,9 +19,20 @@ for (const envFile of [join(here, '.env'), join(SITE, '..', '.env')]) {
   }
 }
 const {
-  ANTHROPIC_API_KEY, TELEGRAM_BOT_TOKEN, TELEGRAM_CHAT_ID,
+  ANTHROPIC_API_KEY, TELEGRAM_BOT_TOKEN, TELEGRAM_INVITE_CODE,
   CLAUDE_MODEL = 'claude-sonnet-5-5', PORT = 8765
 } = process.env;
+
+/* ───────── Владелец бота (Telegram) ─────────
+   Кто первым откроет ссылку-приглашение https://t.me/<бот>?start=<TELEGRAM_INVITE_CODE> и нажмёт «Запустить»,
+   становится владельцем и главным администратором: заявки с сайта приходят ей. После этого приглашение гаснет.
+   Приоритет получателя: закреплённый владелец (server/.owner.json) → TELEGRAM_CHAT_ID из окружения.
+   Чтобы выбор пережил перезапуск на хостинге без постоянного диска, бот присылает владельцу её chat id:
+   его нужно вписать в TELEGRAM_CHAT_ID и удалить TELEGRAM_INVITE_CODE — тогда ссылка перестаёт работать навсегда. */
+const OWNER_FILE = join(here, '.owner.json');
+let ownerChatId = '';
+try { ownerChatId = String(JSON.parse(readFileSync(OWNER_FILE, 'utf8')).chat_id || ''); } catch {}
+const TELEGRAM_CHAT_ID = () => ownerChatId || process.env.TELEGRAM_CHAT_ID || '';
 
 const SYSTEM = `Eres el asistente virtual de Daniela Monalisa Aborsoaie, abogada del despacho SEIS & LAW en Alicante. Tú NO te llamas Daniela: Daniela es la abogada y tú eres su asistente. Preséntate siempre como "el asistente de Daniela" (nunca como "asistente de la práctica jurídica Daniela" ni como si Daniela fuera tu nombre) y habla de ella en tercera persona. Tu misión es recibir a los clientes con máxima empatía, calma y profesionalismo (estilo Silent Luxury).
 REGLAS DE ORO:
@@ -121,7 +133,7 @@ async function sendTelegramChunk(text) {
     try {
       const r = await fetch(`${process.env.TELEGRAM_API_BASE || 'https://api.telegram.org'}/bot${TELEGRAM_BOT_TOKEN}/sendMessage`, {
         method: 'POST', headers: { 'content-type': 'application/json' },
-        body: JSON.stringify({ chat_id: TELEGRAM_CHAT_ID, text, disable_web_page_preview: true }),
+        body: JSON.stringify({ chat_id: TELEGRAM_CHAT_ID(), text, disable_web_page_preview: true }),
         signal: AbortSignal.timeout(10_000)
       });
       if (r.ok) return;
@@ -135,7 +147,7 @@ async function sendTelegramChunk(text) {
 }
 // Telegram режет сообщения на 4096 символах: длинный текст отправляем частями по границам строк
 async function notifyTelegram(text) {
-  if (!TELEGRAM_BOT_TOKEN || !TELEGRAM_CHAT_ID) return false;
+  if (!TELEGRAM_BOT_TOKEN || !TELEGRAM_CHAT_ID()) return false;
   const parts = []; let cur = '';
   for (const line of text.split('\n')) {
     const l = line.slice(0, 3500);
@@ -144,6 +156,40 @@ async function notifyTelegram(text) {
   if (cur) parts.push(cur);
   for (let i = 0; i < parts.length; i++) await sendTelegramChunk(parts.length > 1 ? `(${i + 1}/${parts.length})\n${parts[i]}` : parts[i]);
   return true;
+}
+
+const TG = m => `${process.env.TELEGRAM_API_BASE || 'https://api.telegram.org'}/bot${TELEGRAM_BOT_TOKEN}/${m}`;
+const sameCode = (a, b) => { const x = Buffer.from(String(a)), y = Buffer.from(String(b)); return x.length === y.length && timingSafeEqual(x, y); };
+async function tgReply(chat_id, text) {
+  await fetch(TG('sendMessage'), { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ chat_id, text }), signal: AbortSignal.timeout(10_000) }).catch(() => {});
+}
+// long polling: слушаем только /start <код>; пока владельца нет и код задан
+async function claimLoop() {
+  let offset = 0;
+  while (!ownerChatId && TELEGRAM_INVITE_CODE) {
+    try {
+      const r = await fetch(TG('getUpdates') + `?timeout=25&offset=${offset}&allowed_updates=%5B%22message%22%5D`, { signal: AbortSignal.timeout(35_000) });
+      const j = await r.json();
+      if (!j.ok) { await new Promise(res => setTimeout(res, 15_000)); continue; }
+      for (const u of j.result) {
+        offset = u.update_id + 1;
+        const m = u.message;
+        if (!m || m.chat?.type !== 'private' || typeof m.text !== 'string') continue;
+        const code = (m.text.match(/^\/start(?:@\w+)?\s+(\S+)/) || [])[1];
+        if (!code || !sameCode(code, TELEGRAM_INVITE_CODE)) {
+          await tgReply(m.chat.id, 'Este enlace no es válido. Pide a tu asistente un enlace de invitación nuevo.');
+          continue;
+        }
+        ownerChatId = String(m.chat.id);
+        try { writeFileSync(OWNER_FILE, JSON.stringify({ chat_id: ownerChatId, claimed_at: new Date().toISOString() })); } catch {}
+        console.log(`Владелец бота назначен: chat_id ${ownerChatId}. Впишите его в TELEGRAM_CHAT_ID и удалите TELEGRAM_INVITE_CODE.`);
+        await tgReply(m.chat.id, `Hola${m.from?.first_name ? ', ' + m.from.first_name : ''}. Ya eres la administradora y titular de este asistente: aquí recibirás las solicitudes de tus clientes, 24/7.
+
+Tu ID de chat: ${ownerChatId}`);
+        break;
+      }
+    } catch { await new Promise(res => setTimeout(res, 5_000)); }
+  }
 }
 
 const LANG_NAMES = { es: 'Español', en: 'English', ru: 'Русский', ro: 'Română' };
@@ -260,8 +306,8 @@ http.createServer(async (req, res) => {
   }
 }).listen(PORT, () => {
   console.log(`Сайт + /api/chat: http://127.0.0.1:${PORT}/index.html` + (ALLOWED_ORIGINS.length ? ` · CORS: ${ALLOWED_ORIGINS.join(', ')}` : ''));
-  console.log(`Ключи: ANTHROPIC=${ANTHROPIC_API_KEY ? 'ok' : 'НЕТ'} · TELEGRAM_BOT_TOKEN=${TELEGRAM_BOT_TOKEN ? 'ok' : 'НЕТ'} · TELEGRAM_CHAT_ID=${TELEGRAM_CHAT_ID ? 'ok' : 'НЕТ'}`);
+  console.log(`Ключи: ANTHROPIC=${ANTHROPIC_API_KEY ? 'ok' : 'НЕТ'} · TELEGRAM_BOT_TOKEN=${TELEGRAM_BOT_TOKEN ? 'ok' : 'НЕТ'} · TELEGRAM_CHAT_ID=${TELEGRAM_CHAT_ID() ? 'ok' : 'НЕТ'}`);
   if (TELEGRAM_BOT_TOKEN) fetch(`${process.env.TELEGRAM_API_BASE || 'https://api.telegram.org'}/bot${TELEGRAM_BOT_TOKEN}/getMe`, { signal: AbortSignal.timeout(8000) })
-    .then(r => r.json()).then(j => console.log(j.ok ? `Telegram-бот: @${j.result.username} — подключён` : 'Telegram: токен отклонён (' + j.description + ')'))
+    .then(r => r.json()).then(j => { if (j.ok && TELEGRAM_INVITE_CODE && !ownerChatId) { console.log(`Ссылка-приглашение для владельца: https://t.me/${j.result.username}?start=${TELEGRAM_INVITE_CODE}`); claimLoop(); } console.log(j.ok ? `Telegram-бот: @${j.result.username} — подключён` : 'Telegram: токен отклонён (' + j.description + ')'); })
     .catch(e => console.log('Telegram: нет связи (' + e.message + ')'));
 });
