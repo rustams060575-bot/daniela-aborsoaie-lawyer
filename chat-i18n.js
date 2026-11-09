@@ -3,7 +3,7 @@ window.CHAT_I18N = {
   es: {
     hero_ai: 'Hablar con el asistente',
     ch_status: 'Asistente · responde al instante',
-    ch_greet: 'Hola. Soy el asistente del despacho de Daniela. Cuéntame con tus palabras qué te preocupa; no hace falta que sea preciso.',
+    ch_greet: 'Hola. Soy el asistente de Daniela, abogada del despacho SEIS & LAW en Alicante. Cuéntame con tus palabras qué te preocupa; no hace falta que sea preciso.',
     ch_tag_re: 'Inmuebles', ch_tag_co: 'Contratos', ch_tag_ur: 'Urgente',
     ch_msg_re: 'Tengo una consulta sobre un inmueble.',
     ch_msg_co: 'Necesito revisar o redactar un contrato.',
@@ -22,7 +22,7 @@ window.CHAT_I18N = {
   en: {
     hero_ai: 'Talk to the assistant',
     ch_status: 'Assistant · replies instantly',
-    ch_greet: 'Hello. I am the assistant of Daniela’s practice. Tell me in your own words what worries you; it does not have to be precise.',
+    ch_greet: 'Hello. I am Daniela’s assistant. She is a lawyer at the law firm SEIS & LAW in Alicante. Tell me in your own words what worries you; it does not have to be precise.',
     ch_tag_re: 'Property', ch_tag_co: 'Contracts', ch_tag_ur: 'Urgent',
     ch_msg_re: 'I have a question about a property.',
     ch_msg_co: 'I need a contract reviewed or drafted.',
@@ -41,7 +41,7 @@ window.CHAT_I18N = {
   ru: {
     hero_ai: 'Спросить ассистента',
     ch_status: 'Ассистент · отвечает мгновенно',
-    ch_greet: 'Здравствуйте. Я ассистент юридической практики Daniela. Расскажите своими словами, что вас беспокоит; формулировать точно не нужно.',
+    ch_greet: 'Здравствуйте. Я ассистент Даниэлы, адвоката юридической фирмы SEIS & LAW в Аликанте. Расскажите своими словами, что вас беспокоит; формулировать точно не нужно.',
     ch_tag_re: 'Недвижимость', ch_tag_co: 'Контракты', ch_tag_ur: 'Срочный вопрос',
     ch_msg_re: 'У меня вопрос по недвижимости.',
     ch_msg_co: 'Мне нужно проверить или составить контракт.',
@@ -60,7 +60,7 @@ window.CHAT_I18N = {
   ro: {
     hero_ai: 'Vorbește cu asistentul',
     ch_status: 'Asistent · răspunde instant',
-    ch_greet: 'Bună ziua. Sunt asistentul cabinetului Danielei. Spune-mi cu cuvintele tale ce te îngrijorează; nu trebuie să fie exact.',
+    ch_greet: 'Bună ziua. Sunt asistentul Danielei, avocată la cabinetul SEIS & LAW din Alicante. Spune-mi cu cuvintele tale ce te îngrijorează; nu trebuie să fie exact.',
     ch_tag_re: 'Imobiliare', ch_tag_co: 'Contracte', ch_tag_ur: 'Urgent',
     ch_msg_re: 'Am o întrebare despre un imobil.',
     ch_msg_co: 'Am nevoie de verificarea sau redactarea unui contract.',

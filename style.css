@@ -86,7 +86,7 @@ body.menu-open .bar{transform:none;background:transparent;border-color:transpare
 .snd::after{content:"";position:absolute;left:0;right:0;bottom:-3px;height:1px;background:currentColor;transform:scaleX(0);transform-origin:left;transition:transform .5s var(--ease)}
 .snd:hover,.snd[aria-pressed=true]{opacity:1}
 .snd:hover::after,.snd[aria-pressed=true]::after{transform:scaleX(1)}
-.theme{width:18px;height:18px;border:1px solid var(--strong);border-radius:50%;position:relative;overflow:hidden;transition:transform .6s var(--ease)}
+.theme{width:27px;height:27px;border:1px solid var(--strong);border-radius:50%;position:relative;overflow:hidden;transition:transform .6s var(--ease)}
 .theme i{position:absolute;inset:0;background:var(--strong);transform:translateX(50%);border-radius:0;transition:transform .6s var(--ease)}
 :root[data-theme=dark] .theme i{transform:translateX(-50%)}
 .theme:hover{transform:rotate(180deg)}
@@ -704,7 +704,6 @@ body.menu-open #cursor{mix-blend-mode:difference}
 /* Шапка на телефонах: отступы не меньше 24px и safe-area (вырез/скругления iPhone, ландшафт) */
 @media (max-width:1024px) and (pointer:coarse),(max-width:768px){
   .bar{padding-left:max(24px,env(safe-area-inset-left));padding-right:max(24px,env(safe-area-inset-right))}
-  .snd{padding-inline:3px}
 }
 /* reduced-motion: без бесконечного цикла — блик проходит один раз после загрузки */
 @media (prefers-reduced-motion:reduce){.hero-ai-dot{animation:none}.hero-ai::after{animation:aiShimmer 3s ease 2.4s 1 both}}
@@ -807,9 +806,22 @@ body.menu-open #cursor{mix-blend-mode:difference}
 .chat .chat-ok .link{font:500 14px/1 var(--c-sans);color:var(--c-accent);border-bottom:0}
 @media (prefers-reduced-motion:reduce){.chat .chat-dot::after{animation:none}}
 
-/* Скрипичный ключ (кнопка звука): блок иконки равен высоте глифа, чтобы контур не выступал за границы
-   и не обрезался при композитинге (Safari/Chrome); размер и положение глифа прежние */
-.snd{padding:0 4px}
-.snd .clef{display:block;height:30px;width:auto;overflow:visible}   /* контур Noto Music 𝄞: 1,73 em × 17,6px */
-.snd::after{left:4px;right:4px;bottom:-4px}
-@media (max-width:640px){.snd .clef{height:41px}}   /* на телефоне ключ крупнее (раньше font-size 1.5rem) */
+/* Кнопка звука: круглый индикатор с 4 тонкими штрихами; при воспроизведении штрихи вибрируют */
+.snd{width:27px;height:27px;min-width:27px;min-height:27px;padding:0;box-sizing:border-box;border:1px solid var(--strong);border-radius:50%;opacity:.6;transition:opacity .3s,border-color .3s,transform .5s var(--ease)}
+.snd::after{display:none}
+.snd:hover,.snd[aria-pressed=true]{opacity:1}
+.snd:hover{transform:scale(1.08)}
+.snd::before{content:"";position:absolute;inset:-6px}   /* область нажатия шире видимой кнопки */
+.snd[aria-pressed=true]{border-color:var(--gold);color:var(--gold)}
+.snd .eq{display:flex;align-items:center;justify-content:center;gap:3px;height:15px}
+.snd .eq i{display:block;width:1.5px;height:6px;background:currentColor;border-radius:1px;transform-origin:center}
+.snd .eq i:nth-child(2){height:10px}.snd .eq i:nth-child(3){height:8px}.snd .eq i:nth-child(4){height:5px}
+.snd[aria-pressed=true] .eq i{animation:eqv .9s ease-in-out infinite alternate}
+.snd[aria-pressed=true] .eq i:nth-child(2){animation-duration:.65s;animation-delay:-.2s}
+.snd[aria-pressed=true] .eq i:nth-child(3){animation-duration:1.1s;animation-delay:-.5s}
+.snd[aria-pressed=true] .eq i:nth-child(4){animation-duration:.75s;animation-delay:-.35s}
+@keyframes eqv{from{transform:scaleY(.45)}to{transform:scaleY(1.3)}}
+@media (prefers-reduced-motion:reduce){.snd[aria-pressed=true] .eq i{animation:none}}
+
+/* Под кнопкой агента фон однотонный: вырезы-«окна» в подложках убраны, чтобы вокруг плашки не было светлого/тёмного пятна */
+.hero-corners::before,.hero-veil{-webkit-mask-image:none!important;mask-image:none!important}
